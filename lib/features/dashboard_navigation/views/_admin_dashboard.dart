@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meditouch_admin/features/dashboard_navigation/widgets/_dashboard_bridge.dart';
 import 'package:meditouch_admin/features/dashboard_navigation/widgets/_sidebar.dart';
 
 class AdminDashboard extends StatelessWidget {
@@ -9,8 +10,8 @@ class AdminDashboard extends StatelessWidget {
     return Scaffold(
       body: Row(
         children: [
-          DashboardSidebar(),
-          Expanded(child: Container())
+          const DashboardSidebar(),
+          Expanded(child: DashboardBridge())
         ],
       ),
     );

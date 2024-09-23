@@ -46,6 +46,8 @@ dependencies:
   firebase_auth: ^5.3.0
   lottie: ^3.1.2
   hive_generator: ^1.1.0
+  cached_network_image: ^3.4.1
+  avatar_glow: ^3.0.1
 
 
 dev_dependencies:
