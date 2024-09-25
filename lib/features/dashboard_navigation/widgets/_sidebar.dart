@@ -71,6 +71,34 @@ class DashboardSidebar extends StatelessWidget {
                                 },
                                 isSelected: read.selectedIndex == 2);
                           }),
+                          Consumer(builder: (context, ref, child) {
+                            final read = ref.watch(navigationViewModelProvider);
+                            final write =
+                            ref.watch(navigationViewModelProvider);
+
+                            return DashboardSidebarItem(
+                                label: 'Register doctor',
+                                iconpath: 'assets/icons/register.png',
+                                onTap: () {
+                                  write.updateIndex(3);
+                                },
+                                isSelected: read.selectedIndex == 3);
+                          }),
+
+                          Consumer(builder: (context, ref, child) {
+                            final read = ref.watch(navigationViewModelProvider);
+                            final write =
+                            ref.watch(navigationViewModelProvider);
+
+                            return DashboardSidebarItem(
+                                label: 'Manage doctors',
+                                iconpath: 'assets/icons/doctor-32.png',
+                                onTap: () {
+                                  write.updateIndex(4);
+                                },
+                                isSelected: read.selectedIndex == 4);
+                          }),
+
 
                           Consumer(builder: (context, ref, child) {
                             final read = ref.watch(navigationViewModelProvider);
@@ -81,9 +109,9 @@ class DashboardSidebar extends StatelessWidget {
                                 label: 'Settings',
                                 iconpath: 'assets/icons/settings.png',
                                 onTap: () {
-                                  write.updateIndex(3);
+                                  write.updateIndex(5);
                                 },
-                                isSelected: read.selectedIndex == 3);
+                                isSelected: read.selectedIndex ==5);
                           }),
                         ],
                       ))),

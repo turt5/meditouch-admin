@@ -1,9 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/utils/_datetimeformat.dart';
-import '../../../shared/widgets/_custom_alert.dart';
 import '../../home/models/_cartitemmodel.dart';
 import '../../home/models/_usermodel.dart';
 import '../../home/services/_orderservice.dart';
@@ -36,8 +34,8 @@ class OrderHistoryPage extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 5,
+            color: theme.primary.withOpacity(0.1),
+            spreadRadius: 1,
             blurRadius: 7,
             offset: const Offset(0, 3),
           ),
@@ -238,21 +236,20 @@ class OrderHistoryPage extends StatelessWidget {
               final individualPrice = calculateIndividualPrice(orderProduct);
 
               return ListTile(
-                leading: ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
-                  child: CachedNetworkImage(
-                    imageUrl: orderProduct.imageUrl,
-                    width: 50,
-                    height: 50,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                title: Text(orderProduct.productName,
+                title: Text("${orderProduct.productName} ${orderProduct.strength}",
                     style: TextStyle(
                         fontWeight: FontWeight.bold, color: theme.onPrimary)),
-                subtitle: Text(
-                  '${orderProduct.quantity} x ${orderProduct.unit}',
-                  style: TextStyle(color: theme.onPrimary.withOpacity(.6)),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('${orderProduct.manufacturer}',
+                        style: TextStyle(
+                            color: theme.onPrimary.withOpacity(.6))),
+                    Text(
+                      '${orderProduct.quantity} x ${orderProduct.unit}',
+                      style: TextStyle(color: theme.onPrimary.withOpacity(.6)),
+                    ),
+                  ],
                 ),
                 trailing: Text('৳ $individualPrice',
                     style: TextStyle(

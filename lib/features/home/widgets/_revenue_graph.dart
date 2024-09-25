@@ -11,7 +11,7 @@ class RevenueChart extends StatelessWidget {
   Widget build(BuildContext context) {
     // Get today's date and the first date of the month
     DateTime now = DateTime.now();
-    DateTime startOfMonth = DateTime(now.year, now.month, 1);
+    // DateTime startOfMonth = DateTime(now.year, now.month, 1);
 
     final List<SalesData> chartData = List.generate(
       now.day,

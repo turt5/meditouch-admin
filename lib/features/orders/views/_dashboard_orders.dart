@@ -1,10 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:meditouch_admin/features/home/services/_orderservice.dart';
 import 'package:meditouch_admin/shared/widgets/_custom_alert.dart';
-import 'package:meditouch_admin/shared/widgets/_custom_loading.dart';
-
 import '../../../core/utils/_datetimeformat.dart';
 import '../../home/models/_cartitemmodel.dart';
 import '../../home/models/_usermodel.dart';
@@ -203,15 +200,6 @@ class DashboardOrders extends StatelessWidget {
               final individualPrice = calculateIndividualPrice(orderProduct);
 
               return ListTile(
-                leading: ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
-                  child: CachedNetworkImage(
-                    imageUrl: orderProduct.imageUrl,
-                    width: 50,
-                    height: 50,
-                    fit: BoxFit.cover,
-                  ),
-                ),
                 title: Text(orderProduct.productName,
                     style: TextStyle(
                         fontWeight: FontWeight.bold, color: theme.onPrimary)),
@@ -300,7 +288,7 @@ class DashboardOrders extends StatelessWidget {
                 ),
                 child: Text('0',
                     style: TextStyle(color: theme.onError,fontSize: 15)),
-              );;
+              );
             }
 
             return Container(

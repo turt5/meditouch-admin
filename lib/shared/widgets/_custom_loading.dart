@@ -1,7 +1,5 @@
-import 'package:blur/blur.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 
 void showCustomLoadingDialog(BuildContext context) {
   showDialog(

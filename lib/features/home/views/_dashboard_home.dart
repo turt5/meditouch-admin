@@ -1,5 +1,3 @@
-import 'package:avatar_glow/avatar_glow.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:meditouch_admin/core/utils/_greeting.dart';
