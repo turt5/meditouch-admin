@@ -1,10 +1,15 @@
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:meditouch_admin/core/utils/_greeting.dart';
 import 'package:meditouch_admin/shared/local_db/_db_helper.dart';
 import 'package:meditouch_admin/shared/local_db/person.dart';
 import 'package:meditouch_admin/shared/widgets/_custom_textfield.dart';
+
+import '../services/_orderservice.dart';
+import '../services/_userservice.dart';
+import '../widgets/_revenue_graph.dart';
 
 class DashboardHome extends StatelessWidget {
   const DashboardHome({super.key});
@@ -18,10 +23,247 @@ class DashboardHome extends StatelessWidget {
         height: constraints.maxHeight,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [_buildTopBar(theme)],
+          children: [
+            _buildTopBar(theme),
+            const SizedBox(height: 20),
+            Expanded(
+                child: ListView(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              children: [
+                SizedBox(
+                    height: 200,
+                    width: double.infinity,
+                    child: _buildGridWidget(theme)),
+
+                const SizedBox(height: 20),
+
+                SizedBox(
+                    width: double.infinity, height: 340,
+                    child: _buildGraphWidget(theme)),
+              ],
+            ))
+          ],
         ),
       );
     });
+  }
+
+
+  Widget _buildGraphWidget(ColorScheme theme) {
+    return StreamBuilder(
+        stream: OrderService().getDailyRevenueForCurrentMonth(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CupertinoActivityIndicator(
+              color: theme.primary,
+              radius: 12,
+            );
+          }
+
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+
+          return RevenueChart(revenueData: snapshot.data!);
+        });
+  }
+
+  Widget _buildGridWidget(ColorScheme theme) {
+    return GridView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: 4,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 4,
+            mainAxisExtent: 200,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10),
+        itemBuilder: (context, index) {
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                    color: theme.primary.withOpacity(.1),
+                    borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: theme.primary.withOpacity(.2),
+                    offset: const Offset(5, 5),
+                    blurRadius: 100,
+                    spreadRadius: 2
+                  ),
+                ]
+
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Text('10',
+                    //     maxLines: 2,
+                    //     textAlign: TextAlign.center,
+                    //     overflow: TextOverflow.ellipsis,
+                    //     style: TextStyle(
+                    //         color: theme.onSurface,
+                    //         fontSize: 20,
+                    //         fontWeight: FontWeight.bold)),
+
+                    if (index == 0)
+                      StreamBuilder<double>(
+                          stream: OrderService().getTotalRevenue(),
+                          builder: (context, snapshot) {
+                            print(snapshot.data);
+                            if (snapshot.hasData) {
+                              return Text("৳ ${snapshot.data.toString()}",
+                                  maxLines: 2,
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      color: theme.onSurface,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold));
+                            }
+
+                            if (snapshot.hasError) {
+                              print(snapshot.error);
+                              return Icon(
+                                Icons.error,
+                                color: Colors.red,
+                                size: 15,
+                              );
+                            }
+
+                            return CupertinoActivityIndicator(
+                              color: theme.primary,
+                            );
+                          }),
+
+                    if (index == 1)
+                      StreamBuilder(
+                          stream: OrderService().getOrderCountStream(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return Text(snapshot.data.toString(),
+                                  maxLines: 2,
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      color: theme.onSurface,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold));
+                            }
+
+                            if (snapshot.hasError) {
+                              print(snapshot.error);
+                              return Icon(
+                                Icons.error,
+                                color: Colors.red,
+                                size: 15,
+                              );
+                            }
+
+                            return CupertinoActivityIndicator(
+                              color: theme.primary,
+                            );
+                          }),
+
+                    if (index == 2)
+                      StreamBuilder(
+                          stream: UserService().getUserCountWithRoleU(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return Text(snapshot.data.toString(),
+                                  maxLines: 2,
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      color: theme.onSurface,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold));
+                            }
+
+                            if (snapshot.hasError) {
+                              print(snapshot.error);
+                              return Icon(
+                                Icons.error,
+                                color: Colors.red,
+                                size: 15,
+                              );
+                            }
+
+                            return CupertinoActivityIndicator(
+                              color: theme.primary,
+                            );
+                          }),
+
+                    if (index == 3)
+                      StreamBuilder(
+                          stream: UserService().getUserCountWithRoleD(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return Text(snapshot.data.toString(),
+                                  maxLines: 2,
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      color: theme.onSurface,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold));
+                            }
+
+                            if (snapshot.hasError) {
+                              print(snapshot.error);
+                              return Icon(
+                                Icons.error,
+                                color: Colors.red,
+                                size: 15,
+                              );
+                            }
+
+                            return CupertinoActivityIndicator(
+                              color: theme.primary,
+                            );
+                          }),
+
+                    const SizedBox(height: 10),
+
+                    Text(
+                        index == 0
+                            ? 'Revenues Earned'
+                            : index == 1
+                                ? 'Total Orders'
+                                : index == 2
+                                    ? "Total Users"
+                                    : "Total Doctors",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: theme.onSurface.withOpacity(.6),
+                            fontSize: 13,
+                            fontWeight: FontWeight.normal)),
+                  ],
+                ),
+              ),
+              Positioned(
+                top: 10,
+                left: 10,
+                child: Opacity(
+                  opacity: .3,
+                  child: Image.asset(
+                      index == 0
+                          ? 'assets/icons/icons8-money-50.png'
+                          : index == 1
+                              ? 'assets/icons/icons8-package-50.png'
+                              : index == 2
+                                  ? 'assets/icons/icons8-users-50.png'
+                                  : 'assets/icons/icons8-doctors-50.png',
+                      height: 40,
+                      width: 40),
+                ),
+              ),
+            ],
+          );
+        });
   }
 
   Widget _buildTopBar(ColorScheme theme) {
@@ -77,13 +319,16 @@ class DashboardHome extends StatelessWidget {
                 SizedBox(
                   height: 50,
                   width: 50,
-                  child: IconButton(onPressed: (){}, style: ElevatedButton.styleFrom(
-                    backgroundColor: theme.primary,
-                    foregroundColor: theme.onPrimary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),icon: const Icon(Icons.search)),
+                  child: IconButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.primary,
+                        foregroundColor: theme.onPrimary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      icon: const Icon(Icons.search)),
                 )
               ],
             ),
@@ -100,20 +345,18 @@ class DashboardHome extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 20),
-              AvatarGlow(
-                glowColor: theme.primary,
-                glowRadiusFactor: .4,
-                duration: const Duration(milliseconds: 2000),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
-                  child: CachedNetworkImage(
-                    imageUrl: person.imageUrl,
-                    width: 40,
-                    height: 40,
-                    fit: BoxFit.cover,
-                  ),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: Image.network(
+                  person.imageUrl,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(Icons.person, color: Colors.red);
+                  },
+                  width: 40,
+                  height: 40,
+                  fit: BoxFit.cover,
                 ),
-              ),
+              )
             ],
           )
         ],

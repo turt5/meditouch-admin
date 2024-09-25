@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meditouch_admin/features/dashboard_navigation/viewmodels/_nav_viewmodel.dart';
+import 'package:meditouch_admin/features/order_history/views/_order_history.dart';
 
 import '../../home/views/_dashboard_home.dart';
 import '../../orders/views/_dashboard_orders.dart';
@@ -12,6 +13,7 @@ class DashboardBridge extends ConsumerWidget {
   final List<Widget> pages = [
     DashboardHome(),
     DashboardOrders(),
+    OrderHistoryPage(),
     DashboardSettings(),
   ];
 

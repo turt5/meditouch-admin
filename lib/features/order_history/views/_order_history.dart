@@ -1,17 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:meditouch_admin/features/home/services/_orderservice.dart';
-import 'package:meditouch_admin/shared/widgets/_custom_alert.dart';
-import 'package:meditouch_admin/shared/widgets/_custom_loading.dart';
 
 import '../../../core/utils/_datetimeformat.dart';
+import '../../../shared/widgets/_custom_alert.dart';
 import '../../home/models/_cartitemmodel.dart';
 import '../../home/models/_usermodel.dart';
+import '../../home/services/_orderservice.dart';
 import '../../home/services/_userservice.dart';
 
-class DashboardOrders extends StatelessWidget {
-  const DashboardOrders({super.key});
+class OrderHistoryPage extends StatelessWidget {
+  const OrderHistoryPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,12 +18,83 @@ class DashboardOrders extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildHeader(theme),
-        const SizedBox(height: 20),
-        Expanded(child: _buildOrdersList(theme)),
+        _buildTopBar(theme),
+        const SizedBox(height: 20,),
+        Expanded(
+          child: _buildOrdersList(theme),
+        ),
       ],
     );
   }
+
+  Widget _buildTopBar(ColorScheme theme){
+    return Container(
+      height: 100,
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 5,
+            blurRadius: 7,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Text(
+            'Order History',
+            style: TextStyle(
+              fontSize: 20,
+              color: theme.primary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(width: 10),
+
+          StreamBuilder(stream: OrderService().getAllOrders(), builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CupertinoActivityIndicator(
+                radius: 12,
+                color: theme.primary,
+              );
+            }
+            if (snapshot.hasError) {
+              return const Text('An error occurred while fetching orders');
+            }
+
+            final orders = snapshot.data;
+
+            if (orders == null || orders.isEmpty) {
+              return const Text('No orders found.');
+            }
+
+            // Filter pending orders
+            final deliveredOrders =
+            orders.where((order) => order.orderStatus == 'Delivered').toList();
+
+            if (deliveredOrders.isEmpty) {
+              return const Text('No pending orders found.');
+            }
+
+            return Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: theme.primary,
+                shape: BoxShape.circle,
+              ),
+              child: Text('${deliveredOrders.length}',
+                  style: TextStyle(color: theme.onPrimary,fontSize: 15)),
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
 
   Widget _buildOrdersList(ColorScheme theme) {
     return StreamBuilder(
@@ -48,15 +118,20 @@ class DashboardOrders extends StatelessWidget {
         }
 
         // Filter pending orders
-        final pendingOrders =
-        orders.where((order) => order.orderStatus == 'Pending').toList();
+        final deliveredOrders =
+        orders.where((order) => order.orderStatus == 'Delivered').toList();
 
-        if (pendingOrders.isEmpty) {
+        if (deliveredOrders.isEmpty) {
           return const Center(child: Text('No pending orders found.'));
         }
 
         // Sort orders by timestamp
-        pendingOrders.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+        // deliveredOrders.sort((a, b) => b.timestamp.compareTo(a.deliveryTime));
+        deliveredOrders.sort((a, b){
+          DateTime aTime = DateTime.parse(a.deliveryTime);
+          DateTime bTime = DateTime.parse(b.deliveryTime);
+          return bTime.compareTo(aTime);
+        });
 
         // Fetch all users once
         return FutureBuilder<List<UserModel>>(
@@ -73,9 +148,9 @@ class DashboardOrders extends StatelessWidget {
             final userMap = {for (var user in users) user.userId: user};
 
             return ListView.builder(
-              itemCount: pendingOrders.length,
+              itemCount: deliveredOrders.length,
               itemBuilder: (context, index) {
-                final order = pendingOrders[index];
+                final order = deliveredOrders[index];
                 final user = userMap[order.userId] ??
                     UserModel(
                       userId: 'unknown',
@@ -95,6 +170,8 @@ class DashboardOrders extends StatelessWidget {
       },
     );
   }
+
+
 
   Widget _buildOrderCard(
       order, UserModel user, ColorScheme theme, BuildContext context) {
@@ -125,57 +202,15 @@ class DashboardOrders extends StatelessWidget {
           ),
           Divider(color: theme.onSurface.withOpacity(.2)),
           _buildOrderDetails(order, theme),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    'Order Status:',
-                    style: TextStyle(color: theme.onPrimary.withOpacity(.6)),
-                  ),
-                  const SizedBox(width: 10),
-                  Text(order.orderStatus,
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600, color: theme.onPrimary)),
-                ],
-              ),
-              ElevatedButton(
-                onPressed: () async {
-
-                  bool response =
-                  await OrderService().markAsDelivered(order.orderId);
-
-
-                  if (response) {
-
-                    showCustomAlert(context, 'Marked as delivered!',
-                        CupertinoColors.activeGreen, Colors.white);
-                  } else {
-
-                    showCustomAlert(context,
-                        'Action failed, Something went wrong!', Colors.red, Colors.white);
-                  }
-                },
-                child: Row(
-                  children: const [
-                    Icon(Icons.done),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text('Mark as Delivered'),
-                  ],
-                ),
-              ),
-            ],
-          )
         ],
       ),
     );
   }
 
   Widget _buildOrderDetails(order, ColorScheme theme) {
+
+    DateTime deliveryTime = DateTime.parse(order.deliveryTime);
+
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Column(
@@ -243,80 +278,40 @@ class DashboardOrders extends StatelessWidget {
               ],
             ),
           ),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildHeader(ColorScheme theme) {
-    return Container(
-      height: 100,
-      decoration: BoxDecoration(
-        color: theme.surface,
-        boxShadow: [
-          BoxShadow(
-            color: theme.primary.withOpacity(.1),
-            offset: const Offset(0, 5),
-            blurRadius: 10,
+          const SizedBox(height: 10),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text('Order Status: ',
+                  style: TextStyle(color: theme.onPrimary.withOpacity(.6))),
+              const SizedBox(width: 5),
+              Text(order.orderStatus,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: theme.onPrimary)),
+            ],
+          ),
+
+          const SizedBox(height: 10),
+
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text('Delivery Time: ',
+                  style: TextStyle(color: theme.onPrimary.withOpacity(.6))),
+              const SizedBox(width: 5),
+              Text(AppDateTimeFormat().formatTime(deliveryTime.toString()),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: theme.onPrimary)),
+            ],
           ),
         ],
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      width: double.infinity,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Text('Pending Orders',
-              style: TextStyle(fontSize: 20, color: theme.primary,fontWeight: FontWeight.bold)),
-          const SizedBox(width: 10),
-
-          StreamBuilder(stream: OrderService().getAllOrders(), builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return CupertinoActivityIndicator(
-                radius: 12,
-                color: theme.primary,
-              );
-            }
-            if (snapshot.hasError) {
-              return const Text('An error occurred while fetching orders');
-            }
-
-            final orders = snapshot.data;
-
-            if (orders == null || orders.isEmpty) {
-              return const Text('No orders found.');
-            }
-
-            // Filter pending orders
-            final pendingOrders =
-            orders.where((order) => order.orderStatus == 'Pending').toList();
-
-            if (pendingOrders.isEmpty) {
-              return Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: theme.error,
-                  shape: BoxShape.circle,
-                ),
-                child: Text('0',
-                    style: TextStyle(color: theme.onError,fontSize: 15)),
-              );;
-            }
-
-            return Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: theme.error,
-                shape: BoxShape.circle,
-              ),
-              child: Text('${pendingOrders.length}',
-                  style: TextStyle(color: theme.onError,fontSize: 15)),
-            );
-          }),
-        ],
-      ),
     );
   }
+
 
   String calculateIndividualPrice(CartItem orderProduct) {
     final medicinePrice = orderProduct.medicinePrice.firstWhere(

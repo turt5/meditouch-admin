@@ -57,7 +57,7 @@ class LoginService {
     }
   }
 
-  Future<void> logoutUser(BuildContext context, String userId) async {
+  Future<void> logoutUser(BuildContext context) async {
     try {
       await auth.signOut();
       await dbHelper.deleteUser(); // Delete user data from SQLite

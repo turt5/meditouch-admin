@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:meditouch_admin/features/login/services/_auth_service.dart';
 import 'package:meditouch_admin/shared/widgets/_applogo.dart';
 import 'package:meditouch_admin/shared/widgets/_custom_button.dart';
 import 'package:meditouch_admin/shared/widgets/_gradient_bg.dart';
@@ -50,7 +51,7 @@ class DashboardSidebar extends StatelessWidget {
                                 ref.watch(navigationViewModelProvider);
 
                             return DashboardSidebarItem(
-                                label: 'Orders',
+                                label: 'Pending Orders',
                                 iconpath: 'assets/icons/order.png',
                                 onTap: () {
                                   write.updateIndex(1);
@@ -63,20 +64,37 @@ class DashboardSidebar extends StatelessWidget {
                                 ref.watch(navigationViewModelProvider);
 
                             return DashboardSidebarItem(
-                                label: 'Settings',
-                                iconpath: 'assets/icons/Settings.png',
+                                label: 'Order-History',
+                                iconpath: 'assets/icons/order-history.png',
                                 onTap: () {
                                   write.updateIndex(2);
                                 },
                                 isSelected: read.selectedIndex == 2);
                           }),
+
+                          Consumer(builder: (context, ref, child) {
+                            final read = ref.watch(navigationViewModelProvider);
+                            final write =
+                            ref.watch(navigationViewModelProvider);
+
+                            return DashboardSidebarItem(
+                                label: 'Settings',
+                                iconpath: 'assets/icons/settings.png',
+                                onTap: () {
+                                  write.updateIndex(3);
+                                },
+                                isSelected: read.selectedIndex == 3);
+                          }),
                         ],
                       ))),
               const SizedBox(height: 20),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                 child: CustomButton(
-                    onTap: () {},
+                    onTap: () {
+                      LoginService().logoutUser(context);
+                    },
                     label: 'Log out',
                     bgColor: theme.error,
                     fgColor: theme.onError,
