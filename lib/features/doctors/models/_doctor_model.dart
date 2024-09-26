@@ -16,6 +16,7 @@ class DoctorModel {
   final DateTime createdAt;
   final List<String> timeSlots;
   final int visitFee;
+  final String role;
 
   const DoctorModel({
     required this.id,
@@ -32,6 +33,7 @@ class DoctorModel {
     required this.createdAt,
     required this.timeSlots,
     required this.visitFee,
+    required this.role,
   });
 
   // Serialize to Firestore Map
@@ -51,6 +53,7 @@ class DoctorModel {
       'createdAt': createdAt.toIso8601String(),
       'timeSlots': timeSlots,
       'visitFee': visitFee,
+      'role':role
     };
   }
 
@@ -71,6 +74,7 @@ class DoctorModel {
       createdAt: DateTime.parse(map['createdAt']),
       timeSlots: List<String>.from(map['timeSlots'] ?? []), // Default to an empty list
       visitFee: map['visitingFee'], // Handle potential null or invalid values
+      role: map['role']
     );
   }
 
@@ -94,7 +98,8 @@ class DoctorModel {
         other.image == image &&
         other.createdAt == createdAt &&
         _compareLists(other.timeSlots, timeSlots) &&
-        other.visitFee == visitFee;
+        other.visitFee == visitFee &&
+        other.role == role;
   }
 
   // Override hashCode for unique object identification
@@ -113,7 +118,8 @@ class DoctorModel {
     image.hashCode ^
     createdAt.hashCode ^
     timeSlots.hashCode ^
-    visitFee.hashCode;
+    visitFee.hashCode ^
+    role.hashCode;
   }
 
   // Helper function to compare two lists of Degrees
