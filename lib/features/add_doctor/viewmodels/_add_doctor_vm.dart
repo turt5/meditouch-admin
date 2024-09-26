@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -13,10 +15,10 @@ class AddDoctorviewModel extends ChangeNotifier {
   }
 
 
-  XFile? image;
-  XFile? get getImage => image;
+  dynamic image; // This can be either File or html.File
+  dynamic get getImage => image;
 
-  set setImage(XFile? value) {
+  set setImage(dynamic value) {
     image = value;
     notifyListeners();
   }

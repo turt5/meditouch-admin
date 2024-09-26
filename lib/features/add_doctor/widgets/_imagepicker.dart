@@ -1,6 +1,6 @@
+import 'dart:html' as html;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:meditouch_admin/features/add_doctor/viewmodels/_add_doctor_vm.dart';
 
 class CustomImagePicker extends ConsumerWidget {
@@ -22,13 +22,25 @@ class CustomImagePicker extends ConsumerWidget {
   final Color? borderColor;
 
   Future<void> _pickImage(WidgetRef ref) async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    // Create a file input element for web
+    final html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
+    uploadInput.accept = 'image/*'; // Accept image files only
+    uploadInput.click(); // Trigger the file picker
 
-    if (image != null) {
-      ref.read(addDoctorViewModelProvider).setImage = image;
-      print('Image path: ${image.path}');
-    }
+    uploadInput.onChange.listen((e) async {
+      final files = uploadInput.files;
+      if (files!.isEmpty) return;
+
+      final file = files[0];
+      final reader = html.FileReader();
+      reader.readAsDataUrl(file); // Read the file as a data URL
+
+      reader.onLoadEnd.listen((e) {
+        // Set the image in your state management
+        ref.read(addDoctorViewModelProvider).setImage=file; // Assuming your provider can accept an html.File
+        print('Image name: ${file.name}'); // Display the image name
+      });
+    });
   }
 
   @override
@@ -58,11 +70,11 @@ class CustomImagePicker extends ConsumerWidget {
             style: TextStyle(color: fgColor),
           )
               : Text(
-                imageState.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: fgColor),
-              ),
+            imageState.name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(color: fgColor),
+          ),
         ),
       ),
     );

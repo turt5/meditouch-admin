@@ -3,9 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:meditouch_admin/features/doctors/models/_doctor_model.dart';
 import 'package:meditouch_admin/features/doctors/services/_doctor_service2.dart';
+import 'package:two_dimensional_scrollables/two_dimensional_scrollables.dart';
 
 class ManageDoctor extends StatelessWidget {
-  const ManageDoctor({super.key});
+  ManageDoctor({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,33 +39,12 @@ class ManageDoctor extends StatelessWidget {
                 // Once data is loaded, we display it in a DataTable
                 if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                   final doctors = snapshot.data!;
-                  return SingleChildScrollView(
-                    scrollDirection:
-                    Axis.horizontal, // Handle horizontal overflow
-                    child: DataTableTheme(
-                      data: DataTableThemeData(
-                        headingRowColor: MaterialStateProperty.resolveWith(
-                              (states) => theme.primary.withOpacity(0.1),
-                        ),
-                        headingTextStyle: TextStyle(
-                          color: theme.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        dataTextStyle: TextStyle(
-                          color: Colors.black87,
-                        ),
-                      ),
-                      child: DataTable(
-                        dataRowHeight: 80,
-                        border: TableBorder.all(
-                          color: theme.primary.withOpacity(0.3),
-                          width: 1,
-                        ),
-                        columns: _buildColumns(),
-                        rows: _buildRows(doctors),
-                      ),
-                    ),
-                  );
+
+                  if (doctors.length == 0) {
+                    return Center(child: Text('No doctors available.'));
+                  }
+
+                  return _buildDoctorInfoCard(theme, doctors);
                 } else {
                   return Center(child: Text('No doctors available.'));
                 }
@@ -73,6 +53,173 @@ class ManageDoctor extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildDoctorInfoCard(ColorScheme theme, List<DoctorModel> doctors) {
+    return ListView.builder(
+      itemCount: doctors.length,
+      itemBuilder: (context, index) {
+        final doctor = doctors[index];
+        return Container(
+          padding: const EdgeInsets.all(20),
+          margin: const EdgeInsets.only(bottom: 10), // Space between cards
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: theme.primary.withOpacity(0.1),
+                spreadRadius: 1,
+                blurRadius: 7,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: theme.primary.withOpacity(0.1),
+                      spreadRadius: 1,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                  border: Border.all(
+                      color: theme.secondary.withOpacity(0.7), width: 2),
+                ),
+                padding: const EdgeInsets.all(3),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(13),
+                  child: Image.network(
+                    doctor.image,
+                    width: 120,
+                    height: 120,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(Icons.person, color: Colors.red);
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(width: 20),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    doctor.name,
+                    style: TextStyle(
+                      fontSize: 23,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(doctor.speciality,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: theme.primary)),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Text('License Id:',
+                          style: TextStyle(
+                              color: theme.onSurface.withOpacity(.5),
+                              fontSize: 16)),
+                      const SizedBox(width: 5),
+                      Text(doctor.licenceId),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      Text('Email:',
+                          style: TextStyle(
+                              color: theme.onSurface.withOpacity(.5),
+                              fontSize: 16)),
+                      const SizedBox(width: 5),
+                      Text(doctor.email),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      Text('Gender:',
+                          style: TextStyle(
+                              color: theme.onSurface.withOpacity(.5),
+                              fontSize: 16)),
+                      const SizedBox(width: 5),
+                      Text(doctor.gender),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      Text('Phone:',
+                          style: TextStyle(
+                              color: theme.onSurface.withOpacity(.5),
+                              fontSize: 16)),
+                      const SizedBox(width: 5),
+                      Text(doctor.phone),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      Text('District:',
+                          style: TextStyle(
+                              color: theme.onSurface.withOpacity(.5),
+                              fontSize: 16)),
+                      const SizedBox(width: 5),
+                      Text(doctor.district),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      Text('Visiting Fee:',
+                          style: TextStyle(
+                              color: theme.onSurface.withOpacity(.5),
+                              fontSize: 16)),
+                      const SizedBox(width: 5),
+                      Text(doctor.visitFee.toString()),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Text('Degrees:',
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: theme.onSurface.withOpacity(.5))),
+                  const SizedBox(height: 5),
+                  ...doctor.degrees.map((degree) {
+                    return Text(
+                      '${degree.degree} from ${degree.institution} (${degree.year})',
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                    );
+                  }).toList(),
+                  const SizedBox(height: 10),
+                  Text('Available Time Slots:',
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: theme.onSurface.withOpacity(.5))),
+                  if (doctor.timeSlots.isEmpty)
+                    Text('Not added yet!',
+                        style: TextStyle(fontStyle: FontStyle.italic)),
+                  ...doctor.timeSlots.map((slot) {
+                    return Text(
+                      slot,
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                    );
+                  }).toList(),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -107,49 +254,17 @@ class ManageDoctor extends StatelessWidget {
     );
   }
 
-  // Helper to build the columns of the DataTable
-  List<DataColumn> _buildColumns() {
-    return [
-      const DataColumn(label: Text('Image')),
-      const DataColumn(label: Text('ID')),
-      const DataColumn(label: Text('Name')),
-      const DataColumn(label: Text('Email')),
-      const DataColumn(label: Text('Gender')),
-      const DataColumn(label: Text('Phone')),
-      const DataColumn(label: Text('Licence ID')),
-      const DataColumn(label: Text('Speciality')),
-      const DataColumn(label: Text('District')),
-      const DataColumn(label: Text('Visit Fee')),
-    ];
-  }
-
-  // Helper to build the rows of the DataTable from the list of DoctorModel
-  List<DataRow> _buildRows(List<DoctorModel> doctors) {
-    return doctors.map((doctor) {
-      return DataRow(cells: [
-        DataCell(CachedNetworkImage(
-          imageUrl: doctor.image,
-          width: 70,
-          height: 70,
-          fit: BoxFit.cover,
-          progressIndicatorBuilder: (context, a, b) {
-            return Center(
-                child: CupertinoActivityIndicator(
-                  radius: 12,
-                  color: Colors.blue,
-                ));
-          },
-        )),
-        DataCell(Text(doctor.id)),
-        DataCell(Text(doctor.name)),
-        DataCell(Text(doctor.email)),
-        DataCell(Text(doctor.gender)),
-        DataCell(Text(doctor.phone)),
-        DataCell(Text(doctor.licenceId)),
-        DataCell(Text(doctor.speciality)),
-        DataCell(Text(doctor.district)),
-        DataCell(Text(doctor.visitFee.toString())),
-      ]);
-    }).toList();
-  }
+  final List<String> columns = [
+    "Image",
+    "License ID",
+    "Name",
+    "Gender",
+    "Email",
+    "Phone",
+    "Speciality",
+    "District",
+    "Visit Fee",
+    "Time Slots",
+    "Degrees"
+  ];
 }

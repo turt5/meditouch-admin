@@ -840,6 +840,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.28.0"
+  searchbar_animation:
+    dependency: "direct main"
+    description:
+      name: searchbar_animation
+      sha256: "8c9b82e666dae343f8ec34137da18f0de3f019da42691ec8b2c492ee434cc0ba"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.4"
   shelf:
     dependency: transitive
     description:
@@ -997,6 +1005,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
+  two_dimensional_scrollables:
+    dependency: "direct main"
+    description:
+      name: two_dimensional_scrollables
+      sha256: "74ce1f35a8c74370b322049c9d00bf098938661e9f67054eae0f618e6dc0cb62"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.2"
   typed_data:
     dependency: transitive
     description:

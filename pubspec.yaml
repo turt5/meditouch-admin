@@ -53,6 +53,8 @@ dependencies:
   image_picker: ^1.1.2
   firebase_storage: ^12.3.1
   image_picker_web: ^4.0.0
+  two_dimensional_scrollables: ^0.3.2
+  searchbar_animation: ^0.0.4
 
 
 dev_dependencies:

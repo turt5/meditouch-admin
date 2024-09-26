@@ -81,9 +81,7 @@ class AddDoctorPage extends StatelessWidget {
                             style: TextStyle(
                                 fontSize: 13,
                                 color: theme.onSurface.withOpacity(.5))),
-                        value: read.selectedGender == null
-                            ? null
-                            : read.selectedGender,
+                        value: read.selectedGender,
                         icon: Icon(Icons.arrow_drop_down, color: theme.primary),
                         onChanged: (String? newValue) {
                           if (newValue != null) {
@@ -294,7 +292,7 @@ class AddDoctorPage extends StatelessWidget {
 
 
 
-                      XFile? image = read.image;
+                      dynamic image = read.image;
                       List<List<TextEditingController>> controllers = read.textControllers;
                       List<Map<String, String>> degrees = controllers.map((e) {
                         return {
