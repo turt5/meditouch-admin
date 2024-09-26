@@ -406,7 +406,8 @@ class AddDoctorPage extends StatelessWidget {
                           };
                         }).toList(),
                         'createdAt': DateTime.now().toString(),
-                        'time-slot': []
+                        'time-slot': [],
+                        'role':'d'
                       });
 
                       Navigator.pop(context);
