@@ -1,9 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:meditouch_admin/features/doctors/models/_doctor_model.dart';
 import 'package:meditouch_admin/features/doctors/services/_doctor_service2.dart';
-import 'package:two_dimensional_scrollables/two_dimensional_scrollables.dart';
 
 class ManageDoctor extends StatelessWidget {
   ManageDoctor({super.key});
@@ -199,21 +197,21 @@ class ManageDoctor extends StatelessWidget {
                       '${degree.degree} from ${degree.institution} (${degree.year})',
                       style: TextStyle(fontStyle: FontStyle.italic),
                     );
-                  }).toList(),
+                  }),
                   const SizedBox(height: 10),
                   Text('Available Time Slots:',
                       style: TextStyle(
                           fontSize: 16,
                           color: theme.onSurface.withOpacity(.5))),
                   if (doctor.timeSlots.isEmpty)
-                    Text('Not added yet!',
+                    const Text('Not added yet!',
                         style: TextStyle(fontStyle: FontStyle.italic)),
                   ...doctor.timeSlots.map((slot) {
                     return Text(
                       slot,
-                      style: TextStyle(fontStyle: FontStyle.italic),
+                      style: const TextStyle(fontStyle: FontStyle.italic),
                     );
-                  }).toList(),
+                  }),
                 ],
               ),
             ],
@@ -240,6 +238,7 @@ class ManageDoctor extends StatelessWidget {
         ],
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             'Doctors',
@@ -249,10 +248,14 @@ class ManageDoctor extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
+
         ],
       ),
     );
   }
+
+
+  final TextEditingController _filterController = TextEditingController();
 
   final List<String> columns = [
     "Image",
