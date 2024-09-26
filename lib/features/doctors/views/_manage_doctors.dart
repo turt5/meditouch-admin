@@ -102,6 +102,20 @@ class ManageDoctor extends StatelessWidget {
                     errorBuilder: (context, error, stackTrace) {
                       return const Icon(Icons.person, color: Colors.red);
                     },
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+
+                      return SizedBox(
+                        width: 120,
+                        height: 120,
+                        child: Center(
+                          child: CupertinoActivityIndicator(
+                            radius: 12,
+                            color: theme.onSurface,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),

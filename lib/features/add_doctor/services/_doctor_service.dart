@@ -80,7 +80,9 @@ class DoctorService {
         return false;
       }
 
-      await _firestore.collection('doctors').add(data);
+      // await _firestore.collection('doctors');
+
+      await _firestore.collection('doctors').doc(_user.uid).set(data);
 
       // Send email to the doctor
 
