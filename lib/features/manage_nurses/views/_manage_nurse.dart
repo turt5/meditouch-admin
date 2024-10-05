@@ -1,20 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:meditouch_admin/features/manage_nurses/models/_nurse_model.dart';
+import 'package:meditouch_admin/features/manage_nurses/services/_manage_nurse_services.dart';
 
-import '../models/_doctor_model.dart';
-import '../services/_doctor_service2.dart';
-
-class ManageDoctor extends StatefulWidget {
-  ManageDoctor({super.key});
-
+class ManageNurse extends StatefulWidget {
   @override
-  _ManageDoctorState createState() => _ManageDoctorState();
+  _ManageNurseState createState() => _ManageNurseState();
 }
 
-class _ManageDoctorState extends State<ManageDoctor> {
+class _ManageNurseState extends State<ManageNurse> {
   final TextEditingController _filterController = TextEditingController();
-  List<DoctorModel> _filteredDoctors = [];
-  List<DoctorModel> _allDoctors = [];
+  List<NurseModel> _filteredNurses = [];
+  List<NurseModel> _allNurses = [];
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +25,8 @@ class _ManageDoctorState extends State<ManageDoctor> {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: StreamBuilder<List<DoctorModel>>(
-              stream: DoctorService2().getDoctors(),
+            child: StreamBuilder<List<NurseModel>>(
+              stream: ManageNurseService().getNurses(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   print(snapshot.error);
@@ -44,21 +41,21 @@ class _ManageDoctorState extends State<ManageDoctor> {
                   );
                 }
 
-                // Once data is loaded, we filter it based on the search query
                 if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                  final doctors = snapshot.data!;
-                  _allDoctors = doctors;
+                  final nurses = snapshot.data!;
+                  _allNurses = nurses;
 
                   // Apply filter
-                  _filteredDoctors = _filterDoctors(_filterController.text);
+                  _filteredNurses = _filterNurses(_filterController.text);
 
-                  if (_filteredDoctors.isEmpty) {
+                  // Check if any nurses match the search criteria
+                  if (_filteredNurses.isEmpty) {
                     return Center(child: Text('No search results found.'));
                   }
 
-                  return _buildDoctorInfoCard(theme, _filteredDoctors);
+                  return _buildDoctorInfoCard(theme, _filteredNurses);
                 } else {
-                  return Center(child: Text('No doctors available.'));
+                  return Center(child: Text('No nurses available.'));
                 }
               },
             ),
@@ -68,20 +65,18 @@ class _ManageDoctorState extends State<ManageDoctor> {
     );
   }
 
-  // Function to filter doctors based on search query
-  List<DoctorModel> _filterDoctors(String query) {
+  // Function to filter nurses based on search query
+  List<NurseModel> _filterNurses(String query) {
     if (query.isEmpty) {
-      return _allDoctors;
+      return _allNurses;
     }
-    return _allDoctors.where((doctor) {
+    return _allNurses.where((nurse) {
       final searchLower = query.toLowerCase();
-      return doctor.name.toLowerCase().contains(searchLower) ||
-          doctor.email.toLowerCase().contains(searchLower) ||
-          doctor.phone.toLowerCase().contains(searchLower) ||
-          doctor.district.toLowerCase().contains(searchLower) ||
-          doctor.licenceId.toLowerCase().contains(searchLower) ||
-          doctor.gender.toLowerCase().contains(searchLower) ||
-          doctor.speciality.toLowerCase().contains(searchLower);
+      return nurse.name.toLowerCase().contains(searchLower) ||
+          nurse.email.toLowerCase().contains(searchLower) ||
+          nurse.phone.toLowerCase().contains(searchLower) ||
+          nurse.district.toLowerCase().contains(searchLower) ||
+          nurse.gender.toLowerCase().contains(searchLower);
     }).toList();
   }
 
@@ -106,7 +101,7 @@ class _ManageDoctorState extends State<ManageDoctor> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'Doctors',
+            'Nurses',
             style: TextStyle(
               fontSize: 20,
               color: theme.primary,
@@ -117,13 +112,13 @@ class _ManageDoctorState extends State<ManageDoctor> {
             width: 300,
             child: CupertinoTextField(
               controller: _filterController,
-              placeholderStyle: TextStyle(color: theme.onSurface.withOpacity(.5)),
               placeholder: 'Search by name, email, phone, etc.',
               onChanged: (value) {
                 setState(() {
-                  _filteredDoctors = _filterDoctors(value);
+                  _filteredNurses = _filterNurses(value);
                 });
               },
+              placeholderStyle: TextStyle(color: theme.onSurface.withOpacity(.5)),
               prefix: Padding(
                 padding: const EdgeInsets.only(left: 10),
                 child: Icon(Icons.search, color: theme.primary),
@@ -141,14 +136,14 @@ class _ManageDoctorState extends State<ManageDoctor> {
   }
 
   // Doctor info card builder
-  Widget _buildDoctorInfoCard(ColorScheme theme, List<DoctorModel> doctors) {
+  Widget _buildDoctorInfoCard(ColorScheme theme, List<NurseModel> nurses) {
     return ListView.builder(
-      itemCount: doctors.length,
+      itemCount: nurses.length,
       itemBuilder: (context, index) {
-        final doctor = doctors[index];
+        final nurse = nurses[index];
         return Container(
           padding: const EdgeInsets.all(20),
-          margin: const EdgeInsets.only(bottom: 10), // Space between cards
+          margin: const EdgeInsets.only(bottom: 10),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
@@ -182,10 +177,10 @@ class _ManageDoctorState extends State<ManageDoctor> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(13),
                   child: Image.network(
-                    doctor.image,
-                    width: 120,
-                    height: 120,
-                    fit: BoxFit.cover,
+                    nurse.image,
+                    width: 200,
+                    height: 200,
+                    fit: BoxFit.contain,
                     errorBuilder: (context, error, stackTrace) {
                       return const Icon(Icons.person, color: Colors.red);
                     },
@@ -211,26 +206,11 @@ class _ManageDoctorState extends State<ManageDoctor> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    doctor.name,
+                    nurse.name,
                     style: TextStyle(
                       fontSize: 23,
                       fontWeight: FontWeight.bold,
                     ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(doctor.speciality,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: theme.primary)),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Text('License Id:',
-                          style: TextStyle(
-                              color: theme.onSurface.withOpacity(.5),
-                              fontSize: 16)),
-                      const SizedBox(width: 5),
-                      Text(doctor.licenceId),
-                    ],
                   ),
                   const SizedBox(height: 5),
                   Row(
@@ -240,7 +220,7 @@ class _ManageDoctorState extends State<ManageDoctor> {
                               color: theme.onSurface.withOpacity(.5),
                               fontSize: 16)),
                       const SizedBox(width: 5),
-                      Text(doctor.email),
+                      Text(nurse.email),
                     ],
                   ),
                   const SizedBox(height: 5),
@@ -251,7 +231,7 @@ class _ManageDoctorState extends State<ManageDoctor> {
                               color: theme.onSurface.withOpacity(.5),
                               fontSize: 16)),
                       const SizedBox(width: 5),
-                      Text(doctor.gender),
+                      Text(nurse.gender),
                     ],
                   ),
                   const SizedBox(height: 5),
@@ -262,7 +242,7 @@ class _ManageDoctorState extends State<ManageDoctor> {
                               color: theme.onSurface.withOpacity(.5),
                               fontSize: 16)),
                       const SizedBox(width: 5),
-                      Text(doctor.phone),
+                      Text(nurse.phone),
                     ],
                   ),
                   const SizedBox(height: 5),
@@ -273,7 +253,7 @@ class _ManageDoctorState extends State<ManageDoctor> {
                               color: theme.onSurface.withOpacity(.5),
                               fontSize: 16)),
                       const SizedBox(width: 5),
-                      Text(doctor.district),
+                      Text(nurse.district),
                     ],
                   ),
                   const SizedBox(height: 5),
@@ -284,7 +264,7 @@ class _ManageDoctorState extends State<ManageDoctor> {
                               color: theme.onSurface.withOpacity(.5),
                               fontSize: 16)),
                       const SizedBox(width: 5),
-                      Text(doctor.visitFee.toString()),
+                      Text(nurse.charge.toString()),
                     ],
                   ),
                   const SizedBox(height: 5),
@@ -293,24 +273,10 @@ class _ManageDoctorState extends State<ManageDoctor> {
                           fontSize: 16,
                           color: theme.onSurface.withOpacity(.5))),
                   const SizedBox(height: 5),
-                  ...doctor.degrees.map((degree) {
+                  ...nurse.degrees.map((degree) {
                     return Text(
                       '${degree.degree} from ${degree.institution} (${degree.year})',
                       style: TextStyle(fontStyle: FontStyle.italic),
-                    );
-                  }),
-                  const SizedBox(height: 10),
-                  Text('Available Time Slots:',
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: theme.onSurface.withOpacity(.5))),
-                  if (doctor.timeSlots.isEmpty)
-                    const Text('Not added yet!',
-                        style: TextStyle(fontStyle: FontStyle.italic)),
-                  ...doctor.timeSlots.map((slot) {
-                    return Text(
-                      slot,
-                      style: const TextStyle(fontStyle: FontStyle.italic),
                     );
                   }),
                 ],

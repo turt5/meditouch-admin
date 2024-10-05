@@ -107,7 +107,7 @@ class DashboardSidebar extends StatelessWidget {
 
                             return DashboardSidebarItem(
                                 label: 'Add Nurse',
-                                iconpath: 'assets/icons/nurse2.png',
+                                iconpath: 'assets/icons/register.png',
                                 onTap: () {
                                   write.updateIndex(5);
                                 },
@@ -120,12 +120,26 @@ class DashboardSidebar extends StatelessWidget {
                             ref.watch(navigationViewModelProvider);
 
                             return DashboardSidebarItem(
-                                label: 'Settings',
-                                iconpath: 'assets/icons/settings.png',
+                                label: 'Manage Nurses',
+                                iconpath: 'assets/icons/nurse2.png',
                                 onTap: () {
                                   write.updateIndex(6);
                                 },
-                                isSelected: read.selectedIndex ==6);
+                                isSelected: read.selectedIndex == 6);
+                          }),
+
+                          Consumer(builder: (context, ref, child) {
+                            final read = ref.watch(navigationViewModelProvider);
+                            final write =
+                            ref.watch(navigationViewModelProvider);
+
+                            return DashboardSidebarItem(
+                                label: 'Settings',
+                                iconpath: 'assets/icons/settings.png',
+                                onTap: () {
+                                  write.updateIndex(7);
+                                },
+                                isSelected: read.selectedIndex ==7);
                           }),
                         ],
                       ))),
