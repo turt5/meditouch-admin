@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:meditouch_admin/features/doctors/models/_doctor_model.dart';
+
+import '../models/_doctor_model.dart';
 
 class DoctorService2 {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

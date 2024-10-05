@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:meditouch_admin/features/doctors/models/_degree.dart';
+
+import '_degree.dart';
 
 class DoctorModel {
   final String id;

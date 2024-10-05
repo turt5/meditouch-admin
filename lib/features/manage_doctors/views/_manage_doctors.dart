@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:meditouch_admin/features/doctors/models/_doctor_model.dart';
-import 'package:meditouch_admin/features/doctors/services/_doctor_service2.dart';
+
+import '../models/_doctor_model.dart';
+import '../services/_doctor_service2.dart';
 
 class ManageDoctor extends StatelessWidget {
   ManageDoctor({super.key});
