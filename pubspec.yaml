@@ -58,6 +58,8 @@ dependencies:
   expandable_search_bar: ^0.0.2
   analyzer: 5.13.0
 #  test: ^1.25.8
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.1
 
 
 dev_dependencies:

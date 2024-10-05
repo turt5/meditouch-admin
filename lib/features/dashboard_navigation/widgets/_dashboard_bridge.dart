@@ -6,6 +6,7 @@ import 'package:meditouch_admin/features/add_nurse/views/_add_nurse.dart';
 import 'package:meditouch_admin/features/dashboard_navigation/viewmodels/_nav_viewmodel.dart';
 import 'package:meditouch_admin/features/manage_nurses/views/_manage_nurse.dart';
 import 'package:meditouch_admin/features/order_history/views/_order_history.dart';
+import '../../emergency/views/_emergency_requests.dart';
 import '../../home/views/_dashboard_home.dart';
 import '../../manage_doctors/views/_manage_doctors.dart';
 import '../../manage_emergency_doctors/views/_manage_emergency_doctors.dart';
@@ -17,6 +18,7 @@ class DashboardBridge extends ConsumerWidget {
 
   final List<Widget> pages = [
     const DashboardHome(),
+    EmergencyRequests(),
     const DashboardOrders(),
     const OrderHistoryPage(),
     AddDoctorPage(),
