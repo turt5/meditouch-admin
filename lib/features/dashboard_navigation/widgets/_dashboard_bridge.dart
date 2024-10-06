@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:meditouch_admin/features/add_agent/views/_add_agent_page.dart';
 import 'package:meditouch_admin/features/add_doctor/views/_add_doctor_page.dart';
 import 'package:meditouch_admin/features/add_emergency_doctor/views/_add_emergency_doctor_page.dart';
 import 'package:meditouch_admin/features/add_nurse/views/_add_nurse.dart';
@@ -27,7 +28,8 @@ class DashboardBridge extends ConsumerWidget {
     ManageEmergencyDoctor(),
     AddNursePage(),
     ManageNurse(),
-    const DashboardSettings(),
+    AddAgentPage(),
+    // const DashboardSettings(),
   ];
 
   @override

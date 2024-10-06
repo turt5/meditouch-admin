@@ -169,13 +169,25 @@ class DashboardSidebar extends StatelessWidget {
                     final write = ref.watch(navigationViewModelProvider);
 
                     return DashboardSidebarItem(
-                        label: 'Settings',
-                        iconpath: 'assets/icons/settings.png',
+                        label: 'Add Agent',
+                        iconpath: 'assets/icons/register.png',
                         onTap: () {
                           write.updateIndex(10);
                         },
                         isSelected: read.selectedIndex == 10);
                   }),
+                  // Consumer(builder: (context, ref, child) {
+                  //   final read = ref.watch(navigationViewModelProvider);
+                  //   final write = ref.watch(navigationViewModelProvider);
+                  //
+                  //   return DashboardSidebarItem(
+                  //       label: 'Settings',
+                  //       iconpath: 'assets/icons/settings.png',
+                  //       onTap: () {
+                  //         write.updateIndex(10);
+                  //       },
+                  //       isSelected: read.selectedIndex == 10);
+                  // }),
                 ],
               )),
               const SizedBox(height: 20),

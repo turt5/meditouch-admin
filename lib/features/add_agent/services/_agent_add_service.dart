@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 
-class NurseAddService{
+class AgentAddService{
 
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -30,7 +30,7 @@ class NurseAddService{
         // Reference in Firebase storage
         final Reference ref = storage
             .ref()
-            .child('nurses/${DateTime.now().millisecondsSinceEpoch}');
+            .child('agents/${DateTime.now().millisecondsSinceEpoch}');
 
         // Upload the image as raw bytes using `putData`
         final UploadTask uploadTask = ref.putData(imageBytes);
@@ -44,7 +44,7 @@ class NurseAddService{
         // For mobile, we can upload the file directly
         final Reference ref = storage
             .ref()
-            .child('nurses/${DateTime.now().millisecondsSinceEpoch}');
+            .child('agents/${DateTime.now().millisecondsSinceEpoch}');
 
         // Upload the image using `putFile`
         final UploadTask uploadTask = ref.putFile(image);
@@ -63,9 +63,9 @@ class NurseAddService{
     }
   }
 
-  Future<void> addNurse(Map<String, dynamic> nurseData) async {
+  Future<void> addAgent(Map<String, dynamic> data) async {
     try {
-      await _firestore.collection('nurses').add(nurseData);
+      await _firestore.collection('users').add(data);
     } catch (e) {
       print(e);
     }

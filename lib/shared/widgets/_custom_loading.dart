@@ -1,3 +1,4 @@
+import 'package:blur/blur.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -34,6 +35,9 @@ void showCustomLoadingDialog(BuildContext context) {
             ],
           ),
         ),
+      ).frosted(
+        blur: 15,
+        frostColor: Theme.of(context).colorScheme.onSurface,
       ));
 }
 

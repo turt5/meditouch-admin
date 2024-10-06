@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:meditouch_admin/features/add_doctor/services/_doctor_service.dart';
-import 'package:meditouch_admin/features/add_nurse/widgets/_date_picker_nurse.dart';
-import 'package:meditouch_admin/features/add_nurse/widgets/_image_picker_nurse.dart';
-import 'package:meditouch_admin/features/add_nurse/services/_nurse_add_service.dart';
-import 'package:meditouch_admin/features/add_nurse/viewmodels/_add_nurse_vm.dart';
+import 'package:meditouch_admin/features/add_agent/services/_agent_add_service.dart';
+import 'package:meditouch_admin/features/add_agent/widgets/_date_picker_agent.dart';
+import 'package:meditouch_admin/features/add_agent/widgets/_image_picker_agent.dart';
+import 'package:meditouch_admin/features/manage_agents/models/_agent_model.dart';
 import 'package:meditouch_admin/shared/services/_email_verifier.dart';
 import 'package:meditouch_admin/shared/widgets/_custom_alert.dart';
 import 'package:meditouch_admin/shared/widgets/_custom_button.dart';
 import 'package:meditouch_admin/shared/widgets/_custom_loading.dart';
 import 'package:meditouch_admin/shared/widgets/_custom_textfield.dart';
 
+import '../viewmodels/_agent_viewmodel.dart';
 
-class AddNursePage extends StatelessWidget {
-  AddNursePage({super.key});
+
+class AddAgentPage extends StatelessWidget {
+  AddAgentPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class AddNursePage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Insert nurse details below:',
+                      'Insert agent details below:',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
@@ -67,8 +67,8 @@ class AddNursePage extends StatelessWidget {
                         textColor: theme.onSurface),
                     const SizedBox(height: 10),
                     Consumer(builder: (context, ref, child) {
-                      final read = ref.watch(addNurseViewModelProvider);
-                      final write = ref.read(addNurseViewModelProvider.notifier);
+                      final read = ref.watch(agentViewModelProvider);
+                      final write = ref.read(agentViewModelProvider.notifier);
                       return Container(
                         decoration: BoxDecoration(
                           color: theme.primary.withOpacity(.1),
@@ -107,22 +107,14 @@ class AddNursePage extends StatelessWidget {
                     const SizedBox(height: 10),
                     CustomTextField(
                         height: 50,
-                        hint: 'District',
+                        hint: 'Address',
                         width: 500,
                         controller: districtController,
                         bgColor: theme.primary.withOpacity(.1),
                         hintColor: theme.onSurface.withOpacity(.5),
                         textColor: theme.onSurface),
                     const SizedBox(height: 10),
-                    CustomTextField(
-                        height: 50,
-                        hint: 'Charge per hour',
-                        width: 500,
-                        controller: visitingFeeController,
-                        bgColor: theme.primary.withOpacity(.1),
-                        hintColor: theme.onSurface.withOpacity(.5),
-                        textColor: theme.onSurface),
-                    const SizedBox(height: 10),
+
                     CustomDatePicker(
                         label: 'Select date of birth',
                         width: 500,
@@ -131,110 +123,7 @@ class AddNursePage extends StatelessWidget {
                         fgColor: theme.onSurface,
                         hasBorder: false),
                     const SizedBox(height: 10),
-                    Consumer(builder: (context, ref, child) {
-                      final read = ref.watch(addNurseViewModelProvider);
-                      final write = ref.read(addNurseViewModelProvider.notifier);
-                      return CustomButton(
-                          onTap: () {
-                            write.counter = read.counter + 1;
-                          },
-                          label: 'Add a degree',
-                          bgColor: theme.primary.withOpacity(.1),
-                          fgColor: theme.onSurface,
-                          width: 500,
-                          height: 50);
-                    }),
-                    const SizedBox(height: 20),
-                    Consumer(builder: (context, ref, child) {
-                      final read = ref.watch(addNurseViewModelProvider);
-                      final write = ref.read(addNurseViewModelProvider.notifier);
 
-                      return SizedBox(
-                        width: 550,
-                        child: Column(
-                          children: List.generate(read.counter, (index) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Text(
-                                  'Degree ${index + 1}',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Column(
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                child: CustomTextField(
-                                                    height: 50,
-                                                    hint: 'Degree',
-                                                    width: double.infinity,
-                                                    controller: read
-                                                        .textControllers[index][0],
-                                                    bgColor: theme.primary
-                                                        .withOpacity(.1),
-                                                    hintColor: theme.onSurface
-                                                        .withOpacity(.5),
-                                                    textColor: theme.onSurface),
-                                              ),
-                                              const SizedBox(width: 10),
-                                              Expanded(
-                                                child: CustomTextField(
-                                                    height: 50,
-                                                    hint: 'Year',
-                                                    width: double.infinity,
-                                                    controller: read
-                                                        .textControllers[index][1],
-                                                    bgColor: theme.primary
-                                                        .withOpacity(.1),
-                                                    hintColor: theme.onSurface
-                                                        .withOpacity(.5),
-                                                    textColor: theme.onSurface),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(height: 10),
-                                          CustomTextField(
-                                              height: 50,
-                                              hint: 'Institution',
-                                              width: double.infinity,
-                                              controller:
-                                              read.textControllers[index][2],
-                                              bgColor:
-                                              theme.primary.withOpacity(.1),
-                                              hintColor:
-                                              theme.onSurface.withOpacity(.5),
-                                              textColor: theme.onSurface),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    IconButton(
-                                      icon: Icon(Icons.delete, color: theme.error),
-                                      onPressed: () {
-                                        write.removeByIndex(index);
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(width: 15),
-                              ],
-                            );
-                          }),
-                        ),
-                      );
-                    }),
-                    const SizedBox(height: 10),
                     Consumer(builder: (context, ref, child) {
                       return CustomImagePicker(
                           width: 500,
@@ -245,8 +134,8 @@ class AddNursePage extends StatelessWidget {
                     }),
                     const SizedBox(height: 20),
                     Consumer(builder: (context, ref, child) {
-                      final read = ref.watch(addNurseViewModelProvider);
-                      final write = ref.read(addNurseViewModelProvider);
+                      final read = ref.watch(agentViewModelProvider);
+                      final write = ref.read(agentViewModelProvider);
 
                       return CustomButton(
                         onTap: () async {
@@ -254,8 +143,6 @@ class AddNursePage extends StatelessWidget {
                           String email = emailController.text.trim();
                           String phone = phoneController.text.trim();
                           String district = districtController.text.trim();
-                          String charge = visitingFeeController.text.trim();
-
                           String? gender = read.selectedGender;
                           DateTime? dob = read.dob;
 
@@ -274,14 +161,6 @@ class AddNursePage extends StatelessWidget {
 
 
                           dynamic image = read.image;
-                          List<List<TextEditingController>> controllers = read.textControllers;
-                          List<Map<String, String>> degrees = controllers.map((e) {
-                            return {
-                              'degree': e[0].text.trim(),
-                              'year': e[1].text.trim(),
-                              'institution': e[2].text.trim()
-                            };
-                          }).toList();
 
 
                           // List<Map<String, String>> degrees = [
@@ -310,8 +189,7 @@ class AddNursePage extends StatelessWidget {
                           if (!validateField(name, 'Name') ||
                               !validateField(email, 'Email') ||
                               !validateField(phone, 'Phone') ||
-                              !validateField(district, 'District') ||
-                              !validateField(charge, 'Charge per hour')) {
+                              !validateField(district, 'District')) {
                             return;
                           }
 
@@ -330,11 +208,6 @@ class AddNursePage extends StatelessWidget {
                             return;
                           }
 
-                          if (degrees.isEmpty) {
-                            showCustomAlert(context, 'Please add at least one degree', theme.error, theme.onError);
-                            return;
-                          }
-
                           showCustomLoadingDialog(context);
 
                           if(!await EmailVerifier().verify(email)){
@@ -349,7 +222,7 @@ class AddNursePage extends StatelessWidget {
                           }
 
                           // Upload image and check result
-                          String imageUrl = await NurseAddService().uploadImage(image);
+                          String imageUrl = await AgentAddService().uploadImage(image);
 
                           if (imageUrl.isEmpty || imageUrl == '') {
                             Navigator.pop(context);
@@ -366,26 +239,17 @@ class AddNursePage extends StatelessWidget {
 
 
                           // Prepare the data for adding doctor
-                          await NurseAddService().addNurse({
+                          await AgentAddService().addAgent({
                             'name': name,
                             'email': email,
                             'phone': phone,
-                            'district': district,
-                            'charge': int.parse(charge),
-                            'gender': gender,
-                            'dob': dob,
-                            'image': imageUrl,
-                            'degrees': degrees.map((e) {
-                              return {
-                                'degree': e['degree'],
-                                'year': e['year'],
-                                'institution': e['institution']
-                              };
-                            }).toList(),
-                            'createdAt': DateTime.now().toString(),
-                            'role':'nu'
+                            'dob': dob.toString(),
+                            'address': district,
+                            'gender':gender,
+                            'imageUrl': imageUrl,
+                            'role': 'ag',
                           }).then((_){
-                            showCustomAlert(context, 'Nurse added successfully', theme.primary, theme.onPrimary);
+                            showCustomAlert(context, 'Agent added successfully', theme.primary, theme.onPrimary);
 
                             // Clear the form fields
                             nameController.clear();
@@ -393,8 +257,6 @@ class AddNursePage extends StatelessWidget {
                             phoneController.clear();
                             districtController.clear();
                             licenceIdController.clear();
-                            visitingFeeController.clear();
-                            specialityController.clear();
                             write.dob = null;
                             write.selectedGender = null;
                             write.image = null;
@@ -406,7 +268,7 @@ class AddNursePage extends StatelessWidget {
 
                           Navigator.pop(context);
                         },
-                        label: "Register Nurse",
+                        label: "Register Agent",
                         bgColor: theme.primary,
                         fgColor: theme.onPrimary,
                         width: 500,
@@ -443,7 +305,7 @@ class AddNursePage extends StatelessWidget {
       child: Row(
         children: [
           Text(
-            'Add a Nurse',
+            'Add an agent',
             style: TextStyle(
               fontSize: 20,
               color: theme.primary,
@@ -461,6 +323,4 @@ class AddNursePage extends StatelessWidget {
   TextEditingController phoneController = TextEditingController();
   TextEditingController districtController = TextEditingController();
   TextEditingController licenceIdController = TextEditingController();
-  TextEditingController visitingFeeController = TextEditingController();
-  TextEditingController specialityController = TextEditingController();
 }
