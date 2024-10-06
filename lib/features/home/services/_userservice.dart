@@ -23,11 +23,13 @@ class UserService {
 
   Stream<int> getUserCountWithRoleD() {
     return _firestore
-        .collection('users')
+        .collection('doctors')
         .where('role', isEqualTo: 'd') // Filter users where role is "u"
         .snapshots()
         .map((snapshot) {
       return snapshot.size; // Returns the count of documents that match the query
     });
   }
+
+
 }

@@ -176,6 +176,19 @@ class DashboardSidebar extends StatelessWidget {
                         },
                         isSelected: read.selectedIndex == 10);
                   }),
+
+                  Consumer(builder: (context, ref, child) {
+                    final read = ref.watch(navigationViewModelProvider);
+                    final write = ref.watch(navigationViewModelProvider);
+
+                    return DashboardSidebarItem(
+                        label: 'Agents',
+                        iconpath: 'assets/icons/agent.png',
+                        onTap: () {
+                          write.updateIndex(11);
+                        },
+                        isSelected: read.selectedIndex == 11);
+                  }),
                   // Consumer(builder: (context, ref, child) {
                   //   final read = ref.watch(navigationViewModelProvider);
                   //   final write = ref.watch(navigationViewModelProvider);
