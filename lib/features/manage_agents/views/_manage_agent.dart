@@ -57,7 +57,7 @@ class _ManageNurseState extends State<ManageAgent> {
 
                   return _buildDoctorInfoCard(theme, _filteredAgents);
                 } else {
-                  return Center(child: Text('No nurses available.'));
+                  return Center(child: Text('No agents available.'));
                 }
               },
             ),
