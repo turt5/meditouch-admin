@@ -30,11 +30,15 @@ class DashboardBridge extends ConsumerWidget {
           isSmallScreen: isSmallScreen,
           width: width,
         ),
-        EmergencyRequests(),
+        EmergencyRequests(
+          width: width,
+        ),
         const DashboardOrders(),
         const OrderHistoryPage(),
         AddDoctorPage(),
-        ManageDoctor(),
+        ManageDoctor(
+          width: width,
+        ),
         AddEmergencyDoctorPage(),
         ManageEmergencyDoctor(),
         AddNursePage(),

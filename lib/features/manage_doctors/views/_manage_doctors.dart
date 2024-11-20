@@ -5,7 +5,9 @@ import '../models/_doctor_model.dart';
 import '../services/_doctor_service2.dart';
 
 class ManageDoctor extends StatefulWidget {
-  ManageDoctor({super.key});
+  ManageDoctor({super.key, required this.width});
+
+  final double width;
 
   @override
   _ManageDoctorState createState() => _ManageDoctorState();
@@ -23,7 +25,7 @@ class _ManageDoctorState extends State<ManageDoctor> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildTopBar(theme),
+        _buildTopBar(theme, widget.width),
         const SizedBox(height: 20),
         Expanded(
           child: Padding(
@@ -56,7 +58,8 @@ class _ManageDoctorState extends State<ManageDoctor> {
                     return Center(child: Text('No search results found.'));
                   }
 
-                  return _buildDoctorInfoCard(theme, _filteredDoctors);
+                  return _buildDoctorInfoCard(
+                      theme, _filteredDoctors, widget.width);
                 } else {
                   return Center(child: Text('No doctors available.'));
                 }
@@ -86,7 +89,7 @@ class _ManageDoctorState extends State<ManageDoctor> {
   }
 
   // Widget to build the search bar and title
-  Widget _buildTopBar(ColorScheme theme) {
+  Widget _buildTopBar(ColorScheme theme, double width) {
     return Container(
       height: 100,
       width: double.infinity,
@@ -114,10 +117,11 @@ class _ManageDoctorState extends State<ManageDoctor> {
             ),
           ),
           SizedBox(
-            width: 300,
+            width: width * .4,
             child: CupertinoTextField(
               controller: _filterController,
-              placeholderStyle: TextStyle(color: theme.onSurface.withOpacity(.5)),
+              placeholderStyle:
+                  TextStyle(color: theme.onSurface.withOpacity(.5)),
               placeholder: 'Search by name, email, phone, etc.',
               onChanged: (value) {
                 setState(() {
@@ -141,184 +145,189 @@ class _ManageDoctorState extends State<ManageDoctor> {
   }
 
   // Doctor info card builder
-  Widget _buildDoctorInfoCard(ColorScheme theme, List<DoctorModel> doctors) {
+  Widget _buildDoctorInfoCard(
+    ColorScheme theme,
+    List<DoctorModel> doctors,
+    double width,
+  ) {
     return ListView.builder(
       itemCount: doctors.length,
       itemBuilder: (context, index) {
         final doctor = doctors[index];
-        return Container(
-          padding: const EdgeInsets.all(20),
-          margin: const EdgeInsets.only(bottom: 10), // Space between cards
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: [
-              BoxShadow(
-                color: theme.primary.withOpacity(0.1),
-                spreadRadius: 1,
-                blurRadius: 7,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: theme.primary.withOpacity(0.1),
-                      spreadRadius: 1,
-                      blurRadius: 7,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                  border: Border.all(
-                      color: theme.secondary.withOpacity(0.7), width: 2),
-                ),
-                padding: const EdgeInsets.all(3),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(13),
-                  child: Image.network(
-                    doctor.image,
-                    width: 120,
-                    height: 120,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const Icon(Icons.person, color: Colors.red);
-                    },
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            // Determine if the width is wide or narrow
+            bool isWideScreen = constraints.maxWidth > 600;
 
-                      return SizedBox(
-                        width: 120,
-                        height: 120,
-                        child: Center(
-                          child: CupertinoActivityIndicator(
-                            radius: 12,
-                            color: theme.onSurface,
-                          ),
-                        ),
-                      );
-                    },
+            return Container(
+              padding: const EdgeInsets.all(20),
+              margin: const EdgeInsets.only(bottom: 10), // Space between cards
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: theme.primary.withOpacity(0.1),
+                    spreadRadius: 1,
+                    blurRadius: 7,
+                    offset: const Offset(0, 3),
                   ),
-                ),
-              ),
-              const SizedBox(width: 20),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    doctor.name,
-                    style: TextStyle(
-                      fontSize: 23,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(doctor.speciality,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: theme.primary)),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Text('License Id:',
-                          style: TextStyle(
-                              color: theme.onSurface.withOpacity(.5),
-                              fontSize: 16)),
-                      const SizedBox(width: 5),
-                      Text(doctor.licenceId),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Text('Email:',
-                          style: TextStyle(
-                              color: theme.onSurface.withOpacity(.5),
-                              fontSize: 16)),
-                      const SizedBox(width: 5),
-                      Text(doctor.email),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Text('Gender:',
-                          style: TextStyle(
-                              color: theme.onSurface.withOpacity(.5),
-                              fontSize: 16)),
-                      const SizedBox(width: 5),
-                      Text(doctor.gender),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Text('Phone:',
-                          style: TextStyle(
-                              color: theme.onSurface.withOpacity(.5),
-                              fontSize: 16)),
-                      const SizedBox(width: 5),
-                      Text(doctor.phone),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Text('District:',
-                          style: TextStyle(
-                              color: theme.onSurface.withOpacity(.5),
-                              fontSize: 16)),
-                      const SizedBox(width: 5),
-                      Text(doctor.district),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Text('Visiting Fee:',
-                          style: TextStyle(
-                              color: theme.onSurface.withOpacity(.5),
-                              fontSize: 16)),
-                      const SizedBox(width: 5),
-                      Text(doctor.visitFee.toString()),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Text('Degrees:',
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: theme.onSurface.withOpacity(.5))),
-                  const SizedBox(height: 5),
-                  ...doctor.degrees.map((degree) {
-                    return Text(
-                      '${degree.degree} from ${degree.institution} (${degree.year})',
-                      style: TextStyle(fontStyle: FontStyle.italic),
-                    );
-                  }),
-                  const SizedBox(height: 10),
-                  Text('Available Time Slots:',
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: theme.onSurface.withOpacity(.5))),
-                  if (doctor.timeSlots.isEmpty)
-                    const Text('Not added yet!',
-                        style: TextStyle(fontStyle: FontStyle.italic)),
-                  ...doctor.timeSlots.map((slot) {
-                    return Text(
-                      slot,
-                      style: const TextStyle(fontStyle: FontStyle.italic),
-                    );
-                  }),
                 ],
               ),
-            ],
-          ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Adjust image size based on screen width
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: theme.primary.withOpacity(0.1),
+                          spreadRadius: 1,
+                          blurRadius: 7,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                      border: Border.all(
+                        color: theme.secondary.withOpacity(0.7),
+                        width: 2,
+                      ),
+                    ),
+                    padding: const EdgeInsets.all(3),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(13),
+                      child: Image.network(
+                        doctor.image,
+                        width: isWideScreen
+                            ? 150
+                            : 120, // Adjust width for wider screens
+                        height: isWideScreen
+                            ? 150
+                            : 120, // Adjust height for wider screens
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Icon(Icons.person, color: Colors.red);
+                        },
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+
+                          return SizedBox(
+                            width: isWideScreen ? 150 : 120,
+                            height: isWideScreen ? 150 : 120,
+                            child: Center(
+                              child: CupertinoActivityIndicator(
+                                radius: 12,
+                                color: theme.onSurface,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                  // Adjust the column layout based on screen width
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          doctor.name,
+                          maxLines: 2,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          doctor.speciality,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: theme.primary),
+                        ),
+                        const SizedBox(height: 10),
+                        _buildInfo(theme, 'Licence ID:', doctor.licenceId),
+                        const SizedBox(height: 5),
+                        _buildInfo(theme, 'Email:', doctor.email),
+                        const SizedBox(height: 5),
+                        _buildInfo(theme, 'Gender', doctor.gender),
+                        const SizedBox(height: 5),
+                        _buildInfo(theme, 'Phone:', doctor.phone),
+                        const SizedBox(height: 5),
+                        _buildInfo(theme, 'District:', doctor.district),
+                        const SizedBox(height: 5),
+                        _buildInfo(
+                            theme, 'Date of Birth:', doctor.dob.toString()),
+                        SizedBox(height: 5),
+                        Text(
+                          'Degrees:',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: theme.onSurface.withOpacity(.5),
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        ...doctor.degrees.map((degree) {
+                          return Text(
+                            '${degree.degree} from ${degree.institution} (${degree.year})',
+                            style: TextStyle(fontStyle: FontStyle.italic),
+                          );
+                        }),
+                        const SizedBox(height: 10),
+                        Text(
+                          'Available Time Slots:',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: theme.onSurface.withOpacity(.5),
+                          ),
+                        ),
+                        if (doctor.timeSlots.isEmpty)
+                          const Text(
+                            'Not added yet!',
+                            style: TextStyle(fontStyle: FontStyle.italic),
+                          ),
+                        ...doctor.timeSlots.map((slot) {
+                          return Text(
+                            slot,
+                            style: const TextStyle(fontStyle: FontStyle.italic),
+                          );
+                        }),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
         );
       },
+    );
+  }
+
+  Widget _buildInfo(ColorScheme theme, String label, String text) {
+    return Row(
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            color: theme.onSurface.withOpacity(.5),
+            fontSize: 16,
+          ),
+        ),
+        const SizedBox(width: 5),
+        Expanded(
+            child: Tooltip(
+          message: text,
+          child: Text(
+            text,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontSize: 14),
+          ),
+        )),
+      ],
     );
   }
 }

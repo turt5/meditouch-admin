@@ -224,7 +224,21 @@ class CustomDrawer extends StatelessWidget {
                       height: 45),
                 )
               ],
-            )
+            ),
+            Positioned(
+              right: 10,
+              top: 10,
+              child: IconButton.filled(
+                  onPressed: () {
+                    Scaffold.of(context).openEndDrawer();
+                  },
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: theme.error,
+                      shape: const CircleBorder(),
+                      padding: const EdgeInsets.all(10)),
+                  icon: Icon(Icons.close),
+                  color: Colors.white),
+            ),
           ],
         ),
       ),

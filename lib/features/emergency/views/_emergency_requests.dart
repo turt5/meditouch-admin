@@ -7,6 +7,9 @@ import 'package:meditouch_admin/features/emergency/models/_emergency_service_mod
 import 'package:meditouch_admin/features/emergency/services/_emergency_services.dart';
 
 class EmergencyRequests extends StatefulWidget {
+  const EmergencyRequests({super.key, required this.width});
+
+  final double width;
   @override
   _ManageNurseState createState() => _ManageNurseState();
 }
@@ -62,7 +65,8 @@ class _ManageNurseState extends State<EmergencyRequests> {
                     return Center(child: Text('No search results found.'));
                   }
 
-                  return _buildDoctorInfoCard(theme, _filteredRequests);
+                  return _buildDoctorInfoCard(
+                      theme, _filteredRequests, widget.width);
                 } else {
                   return Center(child: Text('No requests found!'));
                 }
@@ -90,7 +94,7 @@ class _ManageNurseState extends State<EmergencyRequests> {
   Widget _buildTopBar(ColorScheme theme) {
     return Container(
       height: 100,
-      width: double.infinity,
+      width: widget.width,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -115,7 +119,7 @@ class _ManageNurseState extends State<EmergencyRequests> {
             ),
           ),
           SizedBox(
-            width: 300,
+            width: widget.width * .4,
             child: CupertinoTextField(
               controller: _filterController,
               placeholder: 'Search by name, email, phone, etc.',
@@ -125,7 +129,7 @@ class _ManageNurseState extends State<EmergencyRequests> {
                 });
               },
               placeholderStyle:
-              TextStyle(color: theme.onSurface.withOpacity(.5)),
+                  TextStyle(color: theme.onSurface.withOpacity(.5)),
               prefix: Padding(
                 padding: const EdgeInsets.only(left: 10),
                 child: Icon(Icons.search, color: theme.primary),
@@ -143,14 +147,17 @@ class _ManageNurseState extends State<EmergencyRequests> {
   }
 
   // Doctor info card builder
-  Widget _buildDoctorInfoCard(ColorScheme theme, List<EmergencyServiceModel> requests) {
+  Widget _buildDoctorInfoCard(
+      ColorScheme theme, List<EmergencyServiceModel> requests, double width) {
     return ListView.builder(
       itemCount: requests.length,
       itemBuilder: (context, index) {
         final request = requests[index];
+        final bool hasValidLocation =
+            request.latitude != 0.0 && request.longitude != 0.0;
 
-        // Check if latitude and longitude are valid
-        bool hasValidLocation = request.latitude != 0.0 && request.longitude != 0.0;
+        // Determine if it's a small or large screen
+        final bool isWide = width > 800;
 
         return Container(
           padding: const EdgeInsets.all(20),
@@ -167,164 +174,161 @@ class _ManageNurseState extends State<EmergencyRequests> {
               ),
             ],
           ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: theme.primary.withOpacity(0.1),
-                      spreadRadius: 1,
-                      blurRadius: 7,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                  border: Border.all(
-                      color: theme.secondary.withOpacity(0.7), width: 2),
+          child: isWide
+              ? Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: _buildDoctorCardContent(
+                      theme, request, width, isWide, hasValidLocation),
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: _buildDoctorCardContent(
+                      theme, request, width, isWide, hasValidLocation),
                 ),
-                padding: const EdgeInsets.all(3),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(13),
-                  child: Image.network(
-                    request.image,
-                    width: 200,
-                    height: 200,
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const Icon(Icons.person, color: Colors.red);
-                    },
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-
-                      return SizedBox(
-                        width: 120,
-                        height: 120,
-                        child: Center(
-                          child: CupertinoActivityIndicator(
-                            radius: 12,
-                            color: theme.onSurface,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-              const SizedBox(width: 20),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    request.name,
-                    style: const TextStyle(
-                      fontSize: 23,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Text('Email:',
-                          style: TextStyle(
-                              color: theme.onSurface.withOpacity(.5),
-                              fontSize: 16)),
-                      const SizedBox(width: 5),
-                      Text(request.email),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Text('Phone:',
-                          style: TextStyle(
-                              color: theme.onSurface.withOpacity(.5),
-                              fontSize: 16)),
-                      const SizedBox(width: 5),
-                      Text(request.phone),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Text('Service:',
-                          style: TextStyle(
-                              color: theme.onSurface.withOpacity(.5),
-                              fontSize: 16)),
-                      const SizedBox(width: 5),
-                      Text(request.service),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Text('Request Time:',
-                          style: TextStyle(
-                              color: theme.onSurface.withOpacity(.5),
-                              fontSize: 16)),
-                      const SizedBox(width: 5),
-                      Text(AppDateTimeFormat().formatTimestamp(request.requestTime)),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Text('Status:',
-                          style: TextStyle(
-                              color: theme.onSurface.withOpacity(.5),
-                              fontSize: 16)),
-                      const SizedBox(width: 5),
-                      Text(request.status.toUpperCase(),
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: request.status == 'pending'
-                                  ? Colors.red
-                                  : Colors.green)),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(width: 20),
-
-              // Build the map
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildMap(request),
-                        const SizedBox(height: 10),
-                        _buildCompleteButton(request.emergencyId),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
         );
       },
     );
   }
 
+  List<Widget> _buildDoctorCardContent(
+      ColorScheme theme,
+      EmergencyServiceModel request,
+      double width,
+      bool isWide,
+      bool hasValidLocation) {
+    return [
+      // Profile Image
+      ClipRRect(
+        borderRadius: BorderRadius.circular(1000),
+        child: Image.network(
+          request.image,
+          width: isWide ? 200 : width * 0.3,
+          height: isWide ? 200 : width * 0.3,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return const Icon(Icons.person, color: Colors.red);
+          },
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) return child;
 
-  Widget _buildCompleteButton(String id){
+            return SizedBox(
+              width: isWide ? 120 : 80,
+              height: isWide ? 120 : 80,
+              child: Center(
+                child: CupertinoActivityIndicator(
+                  radius: 12,
+                  color: theme.onSurface,
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+
+      const SizedBox(
+        width: 20,
+        height: 20,
+      ),
+
+      // Text Information
+      Expanded(
+        flex: isWide ? 2 : 0,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              request.name,
+              style: const TextStyle(
+                fontSize: 23,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 5),
+            _buildInfoRow('Email:', request.email, theme),
+            _buildInfoRow('Phone:', request.phone, theme),
+            _buildInfoRow('Service:', request.service, theme),
+            _buildInfoRow(
+              'Request Time:',
+              AppDateTimeFormat().formatTimestamp(request.requestTime),
+              theme,
+            ),
+            _buildInfoRow(
+              'Status:',
+              request.status.toUpperCase(),
+              theme,
+              customStyle: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: request.status == 'pending' ? Colors.red : Colors.green,
+              ),
+            ),
+          ],
+        ),
+      ),
+
+      const SizedBox(
+        width: 30,
+        height: 30,
+      ),
+      // Map and Complete Button
+      if (isWide)
+        Expanded(
+          flex: 1,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (hasValidLocation) _buildMap(request),
+              const SizedBox(height: 10),
+              _buildCompleteButton(request.emergencyId, width),
+            ],
+          ),
+        )
+      else
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (hasValidLocation) _buildMap(request),
+            const SizedBox(height: 10),
+            _buildCompleteButton(request.emergencyId, width),
+          ],
+        ),
+    ];
+  }
+
+  Widget _buildInfoRow(String label, String value, ColorScheme theme,
+      {TextStyle? customStyle}) {
+    return Row(
+      children: [
+        Text(
+          '$label ',
+          style: TextStyle(
+            color: theme.onSurface.withOpacity(.5),
+            fontSize: 13,
+          ),
+        ),
+        Flexible(
+          child: Text(
+            value,
+            style: customStyle ??
+                const TextStyle(
+                  fontSize: 13,
+                ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCompleteButton(String id, double width) {
+    final bool isWide = width > 800; // Adjust button size based on screen width
+
     return GestureDetector(
-      onTap: ()async{
+      onTap: () async {
         // Update the status of the request to done
         await EmergencyServices().updateEmergencyRequestStatus(id, 'done');
       },
-
       child: Container(
-        width: 200,
-        height: 45,
+        width: isWide ? 200 : width * 0.5,
+        height: isWide ? 45 : 45,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: Theme.of(context).colorScheme.primary,
@@ -332,21 +336,26 @@ class _ManageNurseState extends State<EmergencyRequests> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.check, color: Colors.white),
+            const Icon(Icons.check, color: Colors.white),
             const SizedBox(width: 10),
-            Text('Mark as done', style: TextStyle(color: Colors.white)),
+            Text(
+              'Mark as done',
+              style: const TextStyle(color: Colors.white),
+            ),
           ],
         ),
       ),
-
     );
   }
 
-
   Widget _buildMap(EmergencyServiceModel request) {
     // Fallback values for latitude and longitude
-    double latitude = request.latitude != 0.0 ? request.latitude : 37.4219983; // Example default lat
-    double longitude = request.longitude != 0.0 ? request.longitude : -122.084; // Example default lng
+    double latitude = request.latitude != 0.0
+        ? request.latitude
+        : 37.4219983; // Example default lat
+    double longitude = request.longitude != 0.0
+        ? request.longitude
+        : -122.084; // Example default lng
 
     return GestureDetector(
       onTap: () {
@@ -354,7 +363,8 @@ class _ManageNurseState extends State<EmergencyRequests> {
         // Show fullscreen map when tapped
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => ShowFullScreenMap(location: LatLng(latitude, longitude)),
+            builder: (context) =>
+                ShowFullScreenMap(location: LatLng(latitude, longitude)),
           ),
         );
       },
@@ -365,11 +375,12 @@ class _ManageNurseState extends State<EmergencyRequests> {
           borderRadius: BorderRadius.circular(10),
           color: Theme.of(context).colorScheme.secondary,
         ),
-        child: Center(child: Text('View Location on Map', style: TextStyle(color: Colors.black))),
+        child: Center(
+            child: Text('View Location on Map',
+                style: TextStyle(color: Colors.black))),
       ),
     );
   }
-
 }
 
 class ShowFullScreenMap extends StatelessWidget {
@@ -401,7 +412,7 @@ class ShowFullScreenMap extends StatelessWidget {
                 width: 80.0,
                 height: 80.0,
                 point: location,
-                child:  const Icon(
+                child: const Icon(
                   Icons.location_pin,
                   color: Colors.red,
                   size: 40.0,
@@ -414,4 +425,3 @@ class ShowFullScreenMap extends StatelessWidget {
     );
   }
 }
-

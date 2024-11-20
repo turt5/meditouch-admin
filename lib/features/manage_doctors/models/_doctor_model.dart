@@ -52,33 +52,37 @@ class DoctorModel {
       'degrees': degrees.map((degree) => degree.toMap()).toList(),
       'image': image,
       'createdAt': createdAt.toIso8601String(),
-      'timeSlots': timeSlots,
+      'time_slot': timeSlots,
       'visitFee': visitFee,
-      'role':role
+      'role': role
     };
   }
 
   // Deserialize from Firestore Map
   factory DoctorModel.fromMap(Map<String, dynamic> map, String documentId) {
     return DoctorModel(
-      id: documentId, // Using document ID as the id field
-      name: map['name'],
-      email: map['email'],
-      gender: map['gender'],
-      phone: map['phone'],
-      licenceId: map['licenceId'],
-      speciality: map['speciality'],
-      district: map['district'],
-      dob: (map['dob'] is Timestamp) ? map['dob'].toDate() : DateTime.now(), // Handle potential nulls
-      degrees: (map['degrees'] as List<dynamic>?)?.map((degreeMap) => Degree.fromMap(degreeMap)).toList() ?? [], // Default to an empty list
-      image: map['image'],
-      createdAt: DateTime.parse(map['createdAt']),
-      timeSlots: List<String>.from(map['timeSlots'] ?? []), // Default to an empty list
-      visitFee: map['visitingFee'], // Handle potential null or invalid values
-      role: map['role']
-    );
+        id: documentId, // Using document ID as the id field
+        name: map['name'],
+        email: map['email'],
+        gender: map['gender'],
+        phone: map['phone'],
+        licenceId: map['licenceId'],
+        speciality: map['speciality'],
+        district: map['district'],
+        dob: (map['dob'] is Timestamp)
+            ? map['dob'].toDate()
+            : DateTime.now(), // Handle potential nulls
+        degrees: (map['degrees'] as List<dynamic>?)
+                ?.map((degreeMap) => Degree.fromMap(degreeMap))
+                .toList() ??
+            [], // Default to an empty list
+        image: map['image'],
+        createdAt: DateTime.parse(map['createdAt']),
+        timeSlots: List<String>.from(
+            map['time_slot'] ?? []), // Default to an empty list
+        visitFee: map['visitingFee'], // Handle potential null or invalid values
+        role: map['role']);
   }
-
 
   // Override == operator for object comparison
   @override
@@ -107,20 +111,20 @@ class DoctorModel {
   @override
   int get hashCode {
     return id.hashCode ^
-    name.hashCode ^
-    email.hashCode ^
-    gender.hashCode ^
-    phone.hashCode ^
-    licenceId.hashCode ^
-    speciality.hashCode ^
-    district.hashCode ^
-    dob.hashCode ^
-    degrees.hashCode ^
-    image.hashCode ^
-    createdAt.hashCode ^
-    timeSlots.hashCode ^
-    visitFee.hashCode ^
-    role.hashCode;
+        name.hashCode ^
+        email.hashCode ^
+        gender.hashCode ^
+        phone.hashCode ^
+        licenceId.hashCode ^
+        speciality.hashCode ^
+        district.hashCode ^
+        dob.hashCode ^
+        degrees.hashCode ^
+        image.hashCode ^
+        createdAt.hashCode ^
+        timeSlots.hashCode ^
+        visitFee.hashCode ^
+        role.hashCode;
   }
 
   // Helper function to compare two lists of Degrees
