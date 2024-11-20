@@ -16,23 +16,33 @@ import '../../orders/views/_dashboard_orders.dart';
 import '../../settings/views/_settings.dart';
 
 class DashboardBridge extends ConsumerWidget {
-  DashboardBridge({super.key});
+  const DashboardBridge({
+    super.key,
+    required this.isSmallScreen,
+    required this.width,
+  });
 
-  final List<Widget> pages = [
-    const DashboardHome(),
-    EmergencyRequests(),
-    const DashboardOrders(),
-    const OrderHistoryPage(),
-    AddDoctorPage(),
-    ManageDoctor(),
-    AddEmergencyDoctorPage(),
-    ManageEmergencyDoctor(),
-    AddNursePage(),
-    ManageNurse(),
-    AddAgentPage(),
-    ManageAgent(),
-    // const DashboardSettings(),
-  ];
+  final bool isSmallScreen;
+  final double width;
+
+  List<Widget> get pages => [
+        DashboardHome(
+          isSmallScreen: isSmallScreen,
+          width: width,
+        ),
+        EmergencyRequests(),
+        const DashboardOrders(),
+        const OrderHistoryPage(),
+        AddDoctorPage(),
+        ManageDoctor(),
+        AddEmergencyDoctorPage(),
+        ManageEmergencyDoctor(),
+        AddNursePage(),
+        ManageNurse(),
+        AddAgentPage(),
+        ManageAgent(),
+        // const DashboardSettings(),
+      ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
