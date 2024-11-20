@@ -62,7 +62,7 @@ class LoginContainer extends StatelessWidget {
 
           //Email
 
-          CustomTextField(
+          CustomTextField2(
               hint: 'Email Address',
               width: width * .7,
               height: 45,
@@ -77,7 +77,7 @@ class LoginContainer extends StatelessWidget {
 
           //Password
 
-          CustomTextField(
+          CustomTextField2(
               hint: 'Password',
               width: width * .7,
               height: 45,
