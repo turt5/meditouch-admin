@@ -6,6 +6,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:meditouch_admin/core/theming/_theme.dart';
 import 'package:meditouch_admin/features/dashboard_navigation/views/_admin_dashboard.dart';
+import 'package:meditouch_admin/features/login/views/_loginpage2.dart';
 import 'package:meditouch_admin/firebase_options.dart';
 import 'package:meditouch_admin/shared/local_db/_db_helper.dart';
 import 'package:meditouch_admin/shared/local_db/person.dart';
@@ -51,7 +52,7 @@ class MyApp extends StatelessWidget {
               person!.role.isNotEmpty &&
               person!.role == 'a'
           ? AdminDashboard()
-          : LoginPage(),
+          : LoginPage2(),
     );
   }
 }

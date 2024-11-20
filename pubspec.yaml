@@ -60,6 +60,7 @@ dependencies:
 #  test: ^1.25.8
   flutter_map: ^7.0.2
   latlong2: ^0.9.1
+  rive: ^0.13.17
 
 
 dev_dependencies:
@@ -94,6 +95,8 @@ flutter:
     - assets/images/
     - assets/svg/
     - assets/lottie/
+    - assets/rive/
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
