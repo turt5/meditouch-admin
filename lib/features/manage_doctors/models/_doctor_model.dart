@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 import '_degree.dart';
 
 class DoctorModel {
@@ -17,7 +15,6 @@ class DoctorModel {
   final DateTime createdAt;
   final List<String> timeSlots;
   final int visitFee;
-  final String role;
 
   const DoctorModel({
     required this.id,
@@ -34,7 +31,6 @@ class DoctorModel {
     required this.createdAt,
     required this.timeSlots,
     required this.visitFee,
-    required this.role,
   });
 
   // Serialize to Firestore Map
@@ -45,8 +41,8 @@ class DoctorModel {
       'email': email,
       'gender': gender,
       'phone': phone,
-      'licenceId': licenceId,
-      'speciality': speciality,
+      'licenseId': licenceId,
+      'specialization': speciality,
       'district': district,
       'dob': dob.toIso8601String(),
       'degrees': degrees.map((degree) => degree.toMap()).toList(),
@@ -54,7 +50,6 @@ class DoctorModel {
       'createdAt': createdAt.toIso8601String(),
       'time_slot': timeSlots,
       'visitFee': visitFee,
-      'role': role
     };
   }
 
@@ -66,12 +61,10 @@ class DoctorModel {
         email: map['email'],
         gender: map['gender'],
         phone: map['phone'],
-        licenceId: map['licenceId'],
-        speciality: map['speciality'],
+        licenceId: map['licenseId'],
+        speciality: map['specialization'],
         district: map['district'],
-        dob: (map['dob'] is Timestamp)
-            ? map['dob'].toDate()
-            : DateTime.now(), // Handle potential nulls
+        dob: DateTime.parse(map['dob']), // Handle potential nulls
         degrees: (map['degrees'] as List<dynamic>?)
                 ?.map((degreeMap) => Degree.fromMap(degreeMap))
                 .toList() ??
@@ -80,8 +73,7 @@ class DoctorModel {
         createdAt: DateTime.parse(map['createdAt']),
         timeSlots: List<String>.from(
             map['time_slot'] ?? []), // Default to an empty list
-        visitFee: map['visitingFee'], // Handle potential null or invalid values
-        role: map['role']);
+        visitFee: int.parse(map['visitingFee']));
   }
 
   // Override == operator for object comparison
@@ -103,8 +95,7 @@ class DoctorModel {
         other.image == image &&
         other.createdAt == createdAt &&
         _compareLists(other.timeSlots, timeSlots) &&
-        other.visitFee == visitFee &&
-        other.role == role;
+        other.visitFee == visitFee;
   }
 
   // Override hashCode for unique object identification
@@ -123,8 +114,7 @@ class DoctorModel {
         image.hashCode ^
         createdAt.hashCode ^
         timeSlots.hashCode ^
-        visitFee.hashCode ^
-        role.hashCode;
+        visitFee.hashCode;
   }
 
   // Helper function to compare two lists of Degrees
