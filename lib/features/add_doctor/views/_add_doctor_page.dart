@@ -16,11 +16,13 @@ class AddDoctorPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: 10,
-        toolbarHeight: 80,
+        surfaceTintColor: theme.surface,
+        shadowColor: theme.primary.withOpacity(.1),
+        toolbarHeight: 90,
         title: Text('Add Doctor',
             style: TextStyle(
                 color: theme.primary,
-                fontSize: 24,
+                fontSize: 20,
                 fontWeight: FontWeight.bold)),
       ),
       body: LayoutBuilder(
