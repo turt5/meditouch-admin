@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   ThemeData getTheme() => ThemeData(
-      fontFamily: GoogleFonts.inter().fontFamily,
+      fontFamily: "SF-Pro-Text",
       colorScheme: const ColorScheme(
           brightness: Brightness.dark,
           primary: Color(0xFF5C05AE),
