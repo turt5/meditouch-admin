@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../models/_doctor_model.dart';
 import '../services/_doctor_service2.dart';
@@ -30,19 +31,106 @@ class _ManageDoctorState extends State<ManageDoctor> {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: StreamBuilder<List<DoctorModel>>(
-              stream: DoctorService2().getDoctors(),
+            child: FutureBuilder<List<DoctorModel>>(
+              future: DoctorService2().getDoctors(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   print(snapshot.error);
                   return Center(child: Text('Error: ${snapshot.error}'));
                 }
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CupertinoActivityIndicator(
-                      radius: 12,
-                      color: theme.primary,
-                    ),
+                  return ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    itemCount: 5, // Show 5 shimmer placeholders
+                    itemBuilder: (context, index) {
+                      return Container(
+                        padding: const EdgeInsets.all(20),
+                        margin: const EdgeInsets.only(
+                            bottom: 10), // Space between cards
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: theme.primary.withOpacity(0.1),
+                              spreadRadius: 1,
+                              blurRadius: 7,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Shimmer for image
+                            Shimmer.fromColors(
+                              baseColor: Colors.grey[300]!,
+                              highlightColor: theme.primary.withOpacity(.3),
+                              child: Container(
+                                width: 120,
+                                height: 120,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(13),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 20),
+                            // Shimmer for text placeholders
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Shimmer.fromColors(
+                                    baseColor: Colors.grey[300]!,
+                                    highlightColor:
+                                        theme.primary.withOpacity(.3),
+                                    child: Container(
+                                      height: 20,
+                                      width: double.infinity,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Shimmer.fromColors(
+                                    baseColor: Colors.grey[300]!,
+                                    highlightColor:
+                                        theme.primary.withOpacity(.3),
+                                    child: Container(
+                                      height: 16,
+                                      width: double.infinity,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Shimmer.fromColors(
+                                    baseColor: Colors.grey[300]!,
+                                    highlightColor:
+                                        theme.primary.withOpacity(.3),
+                                    child: Container(
+                                      height: 16,
+                                      width: double.infinity,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Shimmer.fromColors(
+                                    baseColor: Colors.grey[300]!,
+                                    highlightColor:
+                                        theme.primary.withOpacity(.3),
+                                    child: Container(
+                                      height: 16,
+                                      width: double.infinity,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   );
                 }
 
