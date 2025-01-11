@@ -212,6 +212,7 @@ class AddDoctorController extends GetxController {
         'specialization': specializationController.text,
         'visitingFee': visitingFeeController.text,
         'image': imageUrl,
+        'createdAt': DateTime.now().toIso8601String(),
       };
 
       // add doctor to firestore
