@@ -1,12 +1,9 @@
 import 'package:blur/blur.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:meditouch_admin/features/login/controller/login_controller.dart';
 import 'package:meditouch_admin/shared/widgets/_custom_button.dart';
 import 'package:meditouch_admin/shared/widgets/_custom_textfield.dart';
-
-import '../../../shared/widgets/_custom_alert.dart';
-import '../../../shared/widgets/_custom_loading.dart';
-import '../../dashboard_navigation/views/_admin_dashboard.dart';
-import '../services/_auth_service.dart';
 
 class LoginContainer extends StatelessWidget {
   LoginContainer(
@@ -23,6 +20,10 @@ class LoginContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     // Get theme
     final theme = Theme.of(context).colorScheme;
+
+    // find the login controller
+    final LoginController loginController = Get.find<LoginController>();
+
     return Container(
       width: width,
       height: height,
@@ -66,7 +67,7 @@ class LoginContainer extends StatelessWidget {
               hint: 'Email Address',
               width: width * .7,
               height: 45,
-              controller: _emailController,
+              controller: loginController.emailController,
               bgColor: Colors.transparent,
               hintColor: theme.onSurface.withOpacity(.5),
               hasBorder: true,
@@ -81,7 +82,7 @@ class LoginContainer extends StatelessWidget {
               hint: 'Password',
               width: width * .7,
               height: 45,
-              controller: _passwordController,
+              controller: loginController.passwordController,
               bgColor: Colors.transparent,
               hintColor: theme.onSurface.withOpacity(.5),
               hasBorder: true,
@@ -91,48 +92,18 @@ class LoginContainer extends StatelessWidget {
 
           const SizedBox(height: 15),
 
-          CustomButton(
-              onTap: () async {
-                // Perform login
-                String email = _emailController.text.toString().trim();
-                String password = _passwordController.text.toString().trim();
-
-                if (email.isNotEmpty && password.isNotEmpty) {
-                  // Perform login
-
-                  LoginService loginService = LoginService();
-                  showCustomLoadingDialog(context);
-                  Map<String, dynamic>? response =
-                      await loginService.loginUser(email, password);
-
-                  if (response != null && response.containsKey('error')) {
-                    hideCustomLoadingDialog(context);
-                    showCustomAlert(
-                        context, response['error'], Colors.red, Colors.white);
-                  } else {
-                    hideCustomLoadingDialog(context);
-
-                    if (response!['role'] == 'u' || response['role'] == 'd') {
-                      showCustomAlert(context, 'Wrong email/Password',
-                          theme.error, theme.onError);
-                    } else {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AdminDashboard()));
-                    }
-                  }
-                } else {
-                  // Show error message
-                  showCustomAlert(context, "Email or Password cannot be empty!",
-                      theme.error, theme.onError);
-                }
-              },
-              label: "Login",
-              bgColor: theme.primary,
-              fgColor: theme.onPrimary,
-              width: width * .7,
-              height: 40),
+          GetX<LoginController>(
+              init: LoginController(),
+              builder: (controller) {
+                return CustomButton(
+                    onTap: () async => await controller.loginUser(),
+                    label: "Login",
+                    isLoading: controller.isLoading.value,
+                    bgColor: theme.primary,
+                    fgColor: theme.onPrimary,
+                    width: width * .7,
+                    height: 40);
+              }),
 
           const SizedBox(height: 20),
         ],
@@ -143,7 +114,4 @@ class LoginContainer extends StatelessWidget {
       borderRadius: BorderRadius.circular(20),
     );
   }
-
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
 }
