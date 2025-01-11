@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -5,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:meditouch_admin/core/utils/_datetimeformat.dart';
 import 'package:meditouch_admin/features/emergency/models/_emergency_service_model.dart';
 import 'package:meditouch_admin/features/emergency/services/_emergency_services.dart';
+import 'package:shimmer/shimmer.dart';
 
 class EmergencyRequests extends StatefulWidget {
   const EmergencyRequests({super.key, required this.width});
@@ -39,11 +41,12 @@ class _ManageNurseState extends State<EmergencyRequests> {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 }
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CupertinoActivityIndicator(
-                      radius: 12,
-                      color: theme.primary,
-                    ),
+                  return ListView.builder(
+                    itemCount: 10, // Number of shimmer cards to display
+                    itemBuilder: (context, index) {
+                      return buildShimmerCard(
+                          widget.width, 120, theme); // Adjust height as needed
+                    },
                   );
                 }
 
@@ -190,6 +193,22 @@ class _ManageNurseState extends State<EmergencyRequests> {
     );
   }
 
+  Widget buildShimmerCard(double width, double height, ColorScheme theme) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: theme.primary.withOpacity(0.3),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+    );
+  }
+
   List<Widget> _buildDoctorCardContent(
       ColorScheme theme,
       EmergencyServiceModel request,
@@ -200,17 +219,12 @@ class _ManageNurseState extends State<EmergencyRequests> {
       // Profile Image
       ClipRRect(
         borderRadius: BorderRadius.circular(1000),
-        child: Image.network(
-          request.image,
+        child: CachedNetworkImage(
+          imageUrl: request.image,
           width: isWide ? 200 : width * 0.3,
           height: isWide ? 200 : width * 0.3,
           fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return const Icon(Icons.person, color: Colors.red);
-          },
-          loadingBuilder: (context, child, loadingProgress) {
-            if (loadingProgress == null) return child;
-
+          progressIndicatorBuilder: (context, child, loadingProgress) {
             return SizedBox(
               width: isWide ? 120 : 80,
               height: isWide ? 120 : 80,
