@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get/get.dart';
+import 'package:meditouch_admin/features/dashboard_navigation/controller/navigation_controller.dart';
 import 'package:meditouch_admin/features/emergency/services/_emergency_services.dart';
-import 'package:meditouch_admin/features/login/services/_auth_service.dart';
 import 'package:meditouch_admin/shared/widgets/_applogo.dart';
 import 'package:meditouch_admin/shared/widgets/_custom_button.dart';
 import 'package:meditouch_admin/shared/widgets/_gradient_bg.dart';
-
-import '../viewmodels/_nav_viewmodel.dart';
+import '../../login/controller/login_controller.dart';
 import '_sidebar_item.dart';
 
 class DashboardSidebar extends StatelessWidget {
-  const DashboardSidebar({super.key});
+  final NavigationController navigationController =
+      Get.find<NavigationController>();
+
+  DashboardSidebar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,193 +31,142 @@ class DashboardSidebar extends StatelessWidget {
             children: [
               const AppLogo(width: double.infinity, height: 100),
               Expanded(
-                  child: ListView(
-                padding: const EdgeInsets.only(left: 15),
-                children: [
-                  const SizedBox(height: 20),
-                  Consumer(builder: (context, ref, child) {
-                    final read = ref.watch(navigationViewModelProvider);
-                    final write = ref.watch(navigationViewModelProvider);
-
-                    return DashboardSidebarItem(
-                        label: 'Home',
-                        iconpath: 'assets/icons/home.png',
-                        onTap: () {
-                          write.updateIndex(0);
-                        },
-                        isSelected: read.selectedIndex == 0);
-                  }),
-                  Consumer(builder: (context, ref, child) {
-                    final read = ref.watch(navigationViewModelProvider);
-                    final write = ref.watch(navigationViewModelProvider);
-
-                    return StreamBuilder<int>(
+                child: ListView(
+                  padding: const EdgeInsets.only(left: 15),
+                  children: [
+                    const SizedBox(height: 20),
+                    Obx(() => DashboardSidebarItem(
+                          label: 'Home',
+                          iconpath: 'assets/icons/home.png',
+                          onTap: () {
+                            navigationController.changeIndex(0);
+                          },
+                          isSelected:
+                              navigationController.selectedIndex.value == 0,
+                        )),
+                    StreamBuilder<int>(
                       stream: EmergencyServices().getPendingEmergencyRequests(),
                       builder: (context, snapshot) {
-                        // Check if snapshot has data and if it is greater than 0
                         bool hasDot = snapshot.hasData && snapshot.data! > 0;
-
-                        return DashboardSidebarItem(
-                          hasDot: hasDot, // Pass the hasDot value to the DashboardSidebarItem
-                          label: 'Emergency',
-                          iconpath: 'assets/icons/emergency.png',
-                          onTap: () {
-                            write.updateIndex(1);
-                          },
-                          isSelected: read.selectedIndex == 1,
-                        );
+                        return Obx(() => DashboardSidebarItem(
+                              hasDot: hasDot,
+                              label: 'Emergency',
+                              iconpath: 'assets/icons/emergency.png',
+                              onTap: () {
+                                navigationController.changeIndex(1);
+                              },
+                              isSelected:
+                                  navigationController.selectedIndex.value == 1,
+                            ));
                       },
-                    );
-                  }),
-
-                  Consumer(builder: (context, ref, child) {
-                    final read = ref.watch(navigationViewModelProvider);
-                    final write = ref.watch(navigationViewModelProvider);
-
-                    return DashboardSidebarItem(
-                        label: 'Pending Orders',
-                        iconpath: 'assets/icons/order.png',
-                        onTap: () {
-                          write.updateIndex(2);
-                        },
-                        isSelected: read.selectedIndex == 2);
-                  }),
-                  Consumer(builder: (context, ref, child) {
-                    final read = ref.watch(navigationViewModelProvider);
-                    final write = ref.watch(navigationViewModelProvider);
-
-                    return DashboardSidebarItem(
-                        label: 'Order-History',
-                        iconpath: 'assets/icons/order-history.png',
-                        onTap: () {
-                          write.updateIndex(3);
-                        },
-                        isSelected: read.selectedIndex == 3);
-                  }),
-                  Consumer(builder: (context, ref, child) {
-                    final read = ref.watch(navigationViewModelProvider);
-                    final write = ref.watch(navigationViewModelProvider);
-
-                    return DashboardSidebarItem(
-                        label: 'Register doctor',
-                        iconpath: 'assets/icons/register.png',
-                        onTap: () {
-                          write.updateIndex(4);
-                        },
-                        isSelected: read.selectedIndex == 4);
-                  }),
-                  Consumer(builder: (context, ref, child) {
-                    final read = ref.watch(navigationViewModelProvider);
-                    final write = ref.watch(navigationViewModelProvider);
-
-                    return DashboardSidebarItem(
-                        label: 'Doctors',
-                        iconpath: 'assets/icons/doctor-32.png',
-                        onTap: () {
-                          write.updateIndex(5);
-                        },
-                        isSelected: read.selectedIndex == 5);
-                  }),
-                  Consumer(builder: (context, ref, child) {
-                    final read = ref.watch(navigationViewModelProvider);
-                    final write = ref.watch(navigationViewModelProvider);
-
-                    return DashboardSidebarItem(
-                        label: 'Add Emergency Doctor',
-                        iconpath: 'assets/icons/register.png',
-                        onTap: () {
-                          write.updateIndex(6);
-                        },
-                        isSelected: read.selectedIndex == 6);
-                  }),
-                  Consumer(builder: (context, ref, child) {
-                    final read = ref.watch(navigationViewModelProvider);
-                    final write = ref.watch(navigationViewModelProvider);
-
-                    return DashboardSidebarItem(
-                        label: 'Emergency Doctors',
-                        iconpath: 'assets/icons/doctor-32.png',
-                        onTap: () {
-                          write.updateIndex(7);
-                        },
-                        isSelected: read.selectedIndex == 7);
-                  }),
-                  Consumer(builder: (context, ref, child) {
-                    final read = ref.watch(navigationViewModelProvider);
-                    final write = ref.watch(navigationViewModelProvider);
-
-                    return DashboardSidebarItem(
-                        label: 'Add Nurse',
-                        iconpath: 'assets/icons/register.png',
-                        onTap: () {
-                          write.updateIndex(8);
-                        },
-                        isSelected: read.selectedIndex == 8);
-                  }),
-                  Consumer(builder: (context, ref, child) {
-                    final read = ref.watch(navigationViewModelProvider);
-                    final write = ref.watch(navigationViewModelProvider);
-
-                    return DashboardSidebarItem(
-                        label: 'Nurses',
-                        iconpath: 'assets/icons/nurse2.png',
-                        onTap: () {
-                          write.updateIndex(9);
-                        },
-                        isSelected: read.selectedIndex == 9);
-                  }),
-                  Consumer(builder: (context, ref, child) {
-                    final read = ref.watch(navigationViewModelProvider);
-                    final write = ref.watch(navigationViewModelProvider);
-
-                    return DashboardSidebarItem(
-                        label: 'Add Agent',
-                        iconpath: 'assets/icons/register.png',
-                        onTap: () {
-                          write.updateIndex(10);
-                        },
-                        isSelected: read.selectedIndex == 10);
-                  }),
-
-                  Consumer(builder: (context, ref, child) {
-                    final read = ref.watch(navigationViewModelProvider);
-                    final write = ref.watch(navigationViewModelProvider);
-
-                    return DashboardSidebarItem(
-                        label: 'Agents',
-                        iconpath: 'assets/icons/agent.png',
-                        onTap: () {
-                          write.updateIndex(11);
-                        },
-                        isSelected: read.selectedIndex == 11);
-                  }),
-                  // Consumer(builder: (context, ref, child) {
-                  //   final read = ref.watch(navigationViewModelProvider);
-                  //   final write = ref.watch(navigationViewModelProvider);
-                  //
-                  //   return DashboardSidebarItem(
-                  //       label: 'Settings',
-                  //       iconpath: 'assets/icons/settings.png',
-                  //       onTap: () {
-                  //         write.updateIndex(10);
-                  //       },
-                  //       isSelected: read.selectedIndex == 10);
-                  // }),
-                ],
-              )),
+                    ),
+                    Obx(() => DashboardSidebarItem(
+                          label: 'Pending Orders',
+                          iconpath: 'assets/icons/order.png',
+                          onTap: () {
+                            navigationController.changeIndex(2);
+                          },
+                          isSelected:
+                              navigationController.selectedIndex.value == 2,
+                        )),
+                    Obx(() => DashboardSidebarItem(
+                          label: 'Order-History',
+                          iconpath: 'assets/icons/order-history.png',
+                          onTap: () {
+                            navigationController.changeIndex(3);
+                          },
+                          isSelected:
+                              navigationController.selectedIndex.value == 3,
+                        )),
+                    Obx(() => DashboardSidebarItem(
+                          label: 'Register doctor',
+                          iconpath: 'assets/icons/register.png',
+                          onTap: () {
+                            navigationController.changeIndex(4);
+                          },
+                          isSelected:
+                              navigationController.selectedIndex.value == 4,
+                        )),
+                    Obx(() => DashboardSidebarItem(
+                          label: 'Doctors',
+                          iconpath: 'assets/icons/doctor-32.png',
+                          onTap: () {
+                            navigationController.changeIndex(5);
+                          },
+                          isSelected:
+                              navigationController.selectedIndex.value == 5,
+                        )),
+                    Obx(() => DashboardSidebarItem(
+                          label: 'Add Emergency Doctor',
+                          iconpath: 'assets/icons/register.png',
+                          onTap: () {
+                            navigationController.changeIndex(6);
+                          },
+                          isSelected:
+                              navigationController.selectedIndex.value == 6,
+                        )),
+                    Obx(() => DashboardSidebarItem(
+                          label: 'Emergency Doctors',
+                          iconpath: 'assets/icons/doctor-32.png',
+                          onTap: () {
+                            navigationController.changeIndex(7);
+                          },
+                          isSelected:
+                              navigationController.selectedIndex.value == 7,
+                        )),
+                    Obx(() => DashboardSidebarItem(
+                          label: 'Add Nurse',
+                          iconpath: 'assets/icons/register.png',
+                          onTap: () {
+                            navigationController.changeIndex(8);
+                          },
+                          isSelected:
+                              navigationController.selectedIndex.value == 8,
+                        )),
+                    Obx(() => DashboardSidebarItem(
+                          label: 'Nurses',
+                          iconpath: 'assets/icons/nurse2.png',
+                          onTap: () {
+                            navigationController.changeIndex(9);
+                          },
+                          isSelected:
+                              navigationController.selectedIndex.value == 9,
+                        )),
+                    Obx(() => DashboardSidebarItem(
+                          label: 'Add Agent',
+                          iconpath: 'assets/icons/register.png',
+                          onTap: () {
+                            navigationController.changeIndex(10);
+                          },
+                          isSelected:
+                              navigationController.selectedIndex.value == 10,
+                        )),
+                    Obx(() => DashboardSidebarItem(
+                          label: 'Agents',
+                          iconpath: 'assets/icons/agent.png',
+                          onTap: () {
+                            navigationController.changeIndex(11);
+                          },
+                          isSelected:
+                              navigationController.selectedIndex.value == 11,
+                        )),
+                  ],
+                ),
+              ),
               const SizedBox(height: 20),
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                 child: CustomButton(
-                    onTap: () {
-                      LoginService().logoutUser(context);
-                    },
-                    label: 'Log out',
-                    bgColor: theme.error,
-                    fgColor: theme.onError,
-                    width: double.infinity,
-                    height: 45),
+                  onTap: () async {
+                    await Get.find<LoginController>().logoutUser();
+                  },
+                  label: 'Log out',
+                  bgColor: theme.error,
+                  fgColor: theme.onError,
+                  width: double.infinity,
+                  height: 45,
+                ),
               )
             ],
           )

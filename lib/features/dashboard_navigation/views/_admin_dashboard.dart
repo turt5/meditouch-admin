@@ -20,18 +20,18 @@ class AdminDashboard extends StatelessWidget {
 
           final isSmallScreen = width <= 1000;
 
-          return Row(
-            children: [
-              isSmallScreen
-                  ? const SizedBox.shrink()
-                  : const DashboardSidebar(),
-              Expanded(
-                  child: DashboardBridge(
-                    isSmallScreen: isSmallScreen,
-                    width: width,
-              ))
-            ],
-          );
+          return Builder(builder: (context) {
+            return Row(
+              children: [
+                isSmallScreen ? const SizedBox.shrink() : DashboardSidebar(),
+                Expanded(
+                    child: DashboardBridge(
+                  isSmallScreen: isSmallScreen,
+                  width: width,
+                ))
+              ],
+            );
+          });
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
