@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../../../shared/local_db/_db_helper.dart';
 import '../../../shared/local_db/person.dart';
-import '../views/_loginpage.dart';
 import '../views/_loginpage2.dart';
 
 class LoginService {
@@ -26,8 +25,10 @@ class LoginService {
       }
 
       // Sign in complete, now get data from Firestore
-      DocumentSnapshot userDoc =
-          await db.collection('users').doc(user.uid).get();
+      DocumentSnapshot userDoc = await db
+          .collection('db_client_admin_accountinfo')
+          .doc(user.uid)
+          .get();
       Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
 
       if (userData == null) {
@@ -58,17 +59,5 @@ class LoginService {
     }
   }
 
-  Future<void> logoutUser(BuildContext context) async {
-    try {
-      await auth.signOut();
-      await dbHelper.deleteUser(); // Delete user data from SQLite
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LoginPage2()),
-      );
-    } catch (e) {
-      print('Logout error: $e');
-      // Handle errors related to logout here
-    }
-  }
+  
 }
