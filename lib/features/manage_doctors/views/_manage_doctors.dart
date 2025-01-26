@@ -364,24 +364,24 @@ class _ManageDoctorState extends State<ManageDoctor> {
                           );
                         }),
                         const SizedBox(height: 10),
-                        Text(
-                          'Available Time Slots:',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: theme.onSurface.withOpacity(.5),
-                          ),
-                        ),
-                        if (doctor.timeSlots.isEmpty)
-                          const Text(
-                            'Not added yet!',
-                            style: TextStyle(fontStyle: FontStyle.italic),
-                          ),
-                        ...doctor.timeSlots.map((slot) {
-                          return Text(
-                            slot,
-                            style: const TextStyle(fontStyle: FontStyle.italic),
-                          );
-                        }),
+                        // Text(
+                        //   'Available Time Slots:',
+                        //   style: TextStyle(
+                        //     fontSize: 16,
+                        //     color: theme.onSurface.withOpacity(.5),
+                        //   ),
+                        // ),
+                        // if (doctor.timeSlots.isEmpty)
+                        //   const Text(
+                        //     'Not added yet!',
+                        //     style: TextStyle(fontStyle: FontStyle.italic),
+                        //   ),
+                        // ...doctor.timeSlots.map((slot) {
+                        //   return Text(
+                        //     slot,
+                        //     style: const TextStyle(fontStyle: FontStyle.italic),
+                        //   );
+                        // }),
                       ],
                     ),
                   ),
