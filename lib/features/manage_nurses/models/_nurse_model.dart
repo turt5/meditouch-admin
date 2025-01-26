@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meditouch_admin/features/manage_doctors/models/_degree.dart';
+import 'package:meditouch_admin/features/manage_emergency_doctors/models/_emergency_doctor_model.dart';
 
 class NurseModel {
   final String id;
   final int charge;
   final DateTime createdAt;
-  final List<Degree> degrees;
+  final List<EmergencyDegree> degrees;
   final String district;
   final DateTime dob;
   final String email;
@@ -33,7 +34,7 @@ class NurseModel {
   factory NurseModel.fromMap(Map<String, dynamic> data, String documentId) {
     final int charge = data['charge'];
     final DateTime createdAt = DateTime.parse(data['createdAt']);
-    final List<Degree> degrees = (data['degrees'] as List<dynamic>?)?.map((degreeMap) => Degree.fromMap(degreeMap)).toList() ?? [];
+    final List<EmergencyDegree> degrees = (data['degrees'] as List<dynamic>?)?.map((degreeMap) => EmergencyDegree.fromMap(degreeMap)).toList() ?? [];
     final String district = data['district'];
     final DateTime dob = data['dob'].toDate();
     final String email = data['email'];

@@ -2,16 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io';
 import 'dart:math';
 import 'dart:html' as html; // For handling file input in web
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../../shared/services/_send_mail.dart';
 
-class AgentAddService{
-
-
+class AgentAddService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage storage = FirebaseStorage.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -71,7 +68,7 @@ class AgentAddService{
 
       // Create a new user with email and password
       UserCredential _userCredential =
-      await _auth.createUserWithEmailAndPassword(
+          await _auth.createUserWithEmailAndPassword(
         email: data['email'],
         password: password,
       );
@@ -84,7 +81,12 @@ class AgentAddService{
 
       // await _firestore.collection('doctors');
 
-      await _firestore.collection('users').doc(_user.uid).set(data);
+      data['uid'] = _user.uid;
+
+      await _firestore
+          .collection('db_client_agent_userinfo')
+          .doc(_user.uid)
+          .set(data);
 
       // Send email to the doctor
 
@@ -198,7 +200,7 @@ class AgentAddService{
 </html>
 """;
       bool emailResponse =
-      await emailSender.send(data['email'], subject, text, html);
+          await emailSender.send(data['email'], subject, text, html);
 
       if (!emailResponse) {
         return false;

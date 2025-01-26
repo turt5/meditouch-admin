@@ -1,12 +1,10 @@
 import 'dart:html' as html;
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:meditouch_admin/features/add_doctor/viewmodels/_add_doctor_vm.dart';
-import 'package:meditouch_admin/features/add_nurse/viewmodels/_add_nurse_vm.dart';
+import 'package:get/get.dart';
 
 import '../viewmodels/_add_emergency_doctor_vm.dart';
 
-class CustomImagePicker extends ConsumerWidget {
+class CustomImagePicker extends StatelessWidget {
   const CustomImagePicker({
     super.key,
     required this.width,
@@ -24,7 +22,7 @@ class CustomImagePicker extends ConsumerWidget {
   final bool hasBorder;
   final Color? borderColor;
 
-  Future<void> _pickImage(WidgetRef ref) async {
+  Future<void> _pickImage() async {
     // Create a file input element for web
     final html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
     uploadInput.accept = 'image/*'; // Accept image files only
@@ -39,19 +37,18 @@ class CustomImagePicker extends ConsumerWidget {
       reader.readAsDataUrl(file); // Read the file as a data URL
 
       reader.onLoadEnd.listen((e) {
-        // Set the image in your state management
-        ref.read(addEmergencyDoctorViewModelProvider).setImage=file; // Assuming your provider can accept an html.File
+        // Set the image in your controller
+        Get.find<AddEmergencyDoctorController>().setImage(file);
         print('Image name: ${file.name}'); // Display the image name
       });
     });
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final imageState = ref.watch(addEmergencyDoctorViewModelProvider).getImage;
-
+  Widget build(BuildContext context) {
+    final AddEmergencyDoctorController controller = Get.find();
     return InkWell(
-      onTap: () => _pickImage(ref),
+      onTap: _pickImage,
       borderRadius: BorderRadius.circular(10),
       child: Container(
         height: height,
@@ -65,18 +62,20 @@ class CustomImagePicker extends ConsumerWidget {
           borderRadius: BorderRadius.circular(10),
         ),
         child: Center(
-          child: imageState == null
-              ? Text(
-            'Pick an image',
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: fgColor),
-          )
-              : Text(
-            imageState.name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: fgColor),
+          child: Obx(
+            () => controller.image.value == null
+                ? Text(
+                    'Pick an image',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: fgColor),
+                  )
+                : Text(
+                    controller.image.value.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: fgColor),
+                  ),
           ),
         ),
       ),

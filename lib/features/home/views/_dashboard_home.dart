@@ -114,7 +114,7 @@ class DashboardHome extends StatelessWidget {
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           return Text(
-                            "৳ ${snapshot.data.toString()}",
+                            "৳ ${snapshot.data!.toStringAsFixed(2)}",
                             maxLines: 2,
                             textAlign: TextAlign.center,
                             overflow: TextOverflow.ellipsis,
@@ -137,7 +137,7 @@ class DashboardHome extends StatelessWidget {
                     ),
                   if (index == 1)
                     StreamBuilder(
-                      stream: OrderService().getOrderCountStream(),
+                      stream: OrderService().getTotalAgents(),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           return Text(
@@ -221,7 +221,7 @@ class DashboardHome extends StatelessWidget {
                     index == 0
                         ? 'Revenues Earned'
                         : index == 1
-                            ? 'Total Orders'
+                            ? 'Total Agents'
                             : index == 2
                                 ? "Total Users"
                                 : "Total Doctors",

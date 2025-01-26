@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:meditouch_admin/features/add_nurse/viewmodels/_add_nurse_vm.dart';
+import 'package:get/get.dart';
 
 import '../viewmodels/_add_emergency_doctor_vm.dart';
 
-
-class CustomDatePicker extends ConsumerWidget {
-  const CustomDatePicker(
-      {super.key,
-        required this.label,
-        required this.width,
-        required this.height,
-        required this.bgColor,
-        required this.fgColor,
-        required this.hasBorder,
-        this.borderColor});
+class CustomDatePicker extends StatelessWidget {
+  const CustomDatePicker({
+    super.key,
+    required this.label,
+    required this.width,
+    required this.height,
+    required this.bgColor,
+    required this.fgColor,
+    required this.hasBorder,
+    this.borderColor,
+  });
 
   final String label;
   final double width;
@@ -25,20 +24,20 @@ class CustomDatePicker extends ConsumerWidget {
   final Color? borderColor;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final DateTime? selectedDate = ref.watch(addEmergencyDoctorViewModelProvider).dob;
+  Widget build(BuildContext context) {
+    final AddEmergencyDoctorController controller = Get.find();
 
     void _pickDate() async {
       DateTime? picked = await showDatePicker(
         context: context,
-        initialDate: selectedDate ?? DateTime.now(),
+        initialDate: controller.dob.value ?? DateTime.now(), // Use the controller's dob
         firstDate: DateTime(1900),
         lastDate: DateTime(2100),
       );
 
-      // If a valid date is picked, update it in the ViewModel
-      if (picked != null && picked != selectedDate) {
-        ref.read(addEmergencyDoctorViewModelProvider).setDob = picked;
+      // If a valid date is picked, update it in the controller
+      if (picked != null) {
+        controller.setDob(picked); // Update the controller's dob value
       }
     }
 
@@ -57,11 +56,16 @@ class CustomDatePicker extends ConsumerWidget {
           borderRadius: BorderRadius.circular(10),
         ),
         child: Center(
-          child: Text(
-            selectedDate == null
-                ? label
-                : "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}",
-            style: TextStyle(color: fgColor),
+          child: Obx(  // Use Obx instead of GetBuilder to listen to the dob value
+            () {
+              final selectedDate = controller.dob.value;
+              return Text(
+                selectedDate == null
+                    ? label
+                    : "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}",
+                style: TextStyle(color: fgColor),
+              );
+            },
           ),
         ),
       ),

@@ -27,7 +27,7 @@ class UserModel {
       userName: data['name'] as String,
       userEmail: data['email'] as String,
       userPhone: data['phone'] as String,
-      userImage: data['imageUrl'] as String,
+      userImage: data['image'] as String,
       userDob: data['dob'] as String,
       userGender: data['gender'] as String,
     );

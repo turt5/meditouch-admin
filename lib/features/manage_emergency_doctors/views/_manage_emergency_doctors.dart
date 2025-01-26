@@ -30,7 +30,9 @@ class _ManageNurseState extends State<ManageEmergencyDoctor> {
             child: StreamBuilder<List<EmergencyDoctorModel>>(
               stream: EmergencyDoctorManageService().getEmergencyDoctors(),
               builder: (context, snapshot) {
+                
                 if (snapshot.hasError) {
+                  print(snapshot.data!);
                   print(snapshot.error);
                   return Center(child: Text('Error: ${snapshot.error}'));
                 }
@@ -182,7 +184,7 @@ class _ManageNurseState extends State<ManageEmergencyDoctor> {
                     doctor.image,
                     width: 200,
                     height: 200,
-                    fit: BoxFit.contain,
+                    fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return const Icon(Icons.person, color: Colors.red);
                     },

@@ -24,7 +24,7 @@ class EmergencyServices {
         final userId = emergency.data()['userId'];
 
         // Fetch user info for each emergency
-        final userDoc = await _firestore.collection('users').doc(userId).get();
+        final userDoc = await _firestore.collection('db_client_user_userinfo').doc(userId).get();
 
         if (userDoc.exists) {
           final userData = userDoc.data()!;
@@ -33,7 +33,7 @@ class EmergencyServices {
               'userId': userId,
               'service': emergency.data()['service'],
               'status': emergency.data()['status'],
-              'image': userData['imageUrl'],
+              'image': userData['image'],
               'name': userData['name'],
               'requestTime': emergency.data()['requestTime'],
               'email': userData['email'],

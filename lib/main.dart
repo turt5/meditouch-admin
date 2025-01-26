@@ -15,6 +15,7 @@ import 'package:meditouch_admin/shared/local_db/person.dart';
 
 import 'app/meditouch_admin.dart';
 import 'features/add_doctor/controller/add_doctor_controller.dart';
+import 'features/add_emergency_doctor/viewmodels/_add_emergency_doctor_vm.dart';
 import 'features/dashboard_navigation/controller/navigation_controller.dart';
 
 void main() async {
@@ -42,8 +43,12 @@ void main() async {
   // inject add doctor controller
   Get.put(AddDoctorController());
 
+  Get.put(AddEmergencyDoctorController()); 
+
   // Run the app
-  runApp(MeditouchAdmin(
-    person: person,
+  runApp(ProviderScope(
+    child: MeditouchAdmin(
+      person: person,
+    ),
   ));
 }

@@ -1,4 +1,4 @@
-class AgentModel{
+class AgentModel {
   final String id;
   final String name;
   final String email;
@@ -7,8 +7,6 @@ class AgentModel{
   final String address;
   final String gender;
   final String imageUrl;
-  final String role;
-
 
   AgentModel({
     required this.id,
@@ -19,24 +17,20 @@ class AgentModel{
     required this.address,
     required this.gender,
     required this.imageUrl,
-    required this.role,
   });
 
-
-  factory AgentModel.fromJson(Map<String, dynamic> json, String id){
+  factory AgentModel.fromJson(Map<String, dynamic> json) {
     return AgentModel(
-      id: id,
+      id: json['uid'],
       name: json['name'],
       email: json['email'],
       phone: json['phone'],
       dob: json['dob'],
       address: json['address'],
-        gender: json['gender'],
-        imageUrl: json['imageUrl'],
-        role: json['role']
+      gender: json['gender'],
+      imageUrl: json['image'],
     );
   }
-
 
   Map<String, dynamic> toJson() {
     return {
@@ -47,8 +41,6 @@ class AgentModel{
       'address': address,
       'gender': gender,
       'imageUrl': imageUrl,
-      'role': role
     };
   }
-
 }

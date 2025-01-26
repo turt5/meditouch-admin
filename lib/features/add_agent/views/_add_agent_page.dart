@@ -246,8 +246,8 @@ class AddAgentPage extends StatelessWidget {
                             'dob': dob.toString(),
                             'address': district,
                             'gender':gender,
-                            'imageUrl': imageUrl,
-                            'role': 'ag',
+                            'image': imageUrl,
+                            // 'role': 'ag',
                           }).then((_){
                             showCustomAlert(context, 'Agent added successfully', theme.primary, theme.onPrimary);
 

@@ -181,7 +181,7 @@ class _ManageNurseState extends State<ManageNurse> {
                     nurse.image,
                     width: 200,
                     height: 200,
-                    fit: BoxFit.contain,
+                    fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return const Icon(Icons.person, color: Colors.red);
                     },

@@ -1,11 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meditouch_admin/features/manage_doctors/models/_degree.dart';
 
 class EmergencyDoctorModel {
   final String id;
   final int charge;
-  final DateTime createdAt;
-  final List<Degree> degrees;
+  // final DateTime createdAt;
+  final List<EmergencyDegree> degrees;
   final String district;
   final DateTime dob;
   final String email;
@@ -19,7 +18,7 @@ class EmergencyDoctorModel {
   EmergencyDoctorModel({
     required this.id,
     required this.charge,
-    required this.createdAt,
+    // required this.createdAt,
     required this.degrees,
     required this.district,
     required this.dob,
@@ -34,8 +33,8 @@ class EmergencyDoctorModel {
 
   factory EmergencyDoctorModel.fromMap(Map<String, dynamic> data, String documentId) {
     final int charge = data['charge'];
-    final DateTime createdAt = DateTime.parse(data['createdAt']);
-    final List<Degree> degrees = (data['degrees'] as List<dynamic>?)?.map((degreeMap) => Degree.fromMap(degreeMap)).toList() ?? [];
+    // final DateTime createdAt = DateTime.parse(data['createdAt']);
+    final List<EmergencyDegree> degrees = (data['degrees'] as List<dynamic>?)?.map((degreeMap) => EmergencyDegree.fromMap(degreeMap)).toList() ?? [];
     final String district = data['district'];
     final DateTime dob = data['dob'].toDate();
     final String email = data['email'];
@@ -49,7 +48,7 @@ class EmergencyDoctorModel {
     return EmergencyDoctorModel(
         id: documentId,
         charge: charge,
-        createdAt: createdAt,
+        // createdAt: createdAt,
         degrees: degrees,
         district: district,
         dob: dob,
@@ -64,4 +63,24 @@ class EmergencyDoctorModel {
   }
 
 
+}
+
+
+class EmergencyDegree{
+  final String degree;
+  final String institution;
+  final String year;
+
+  EmergencyDegree({required this.degree, required this.institution, required this.year}); 
+
+  factory EmergencyDegree.fromMap(Map<String, dynamic> data){
+    final degree = data['degree'];
+    final institution = data['institution'];
+    final year = data['year'];
+    return EmergencyDegree(degree: degree, institution: institution, year: year);
+  }
+
+  Map<String, dynamic> toMap(){
+    return {'degree': degree, 'institution': institution, 'year': year};
+  }
 }
